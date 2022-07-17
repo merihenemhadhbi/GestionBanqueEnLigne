@@ -31,7 +31,7 @@ public class Post {
 	private Date date_modification;
 	 @ManyToOne
 	    private Utilisateur utilisateur;
-	 @OneToMany
+	 @OneToMany(mappedBy = "post",cascade = CascadeType.ALL)
 	    private List<Commentaire> Commentaire;
 	 
 	
