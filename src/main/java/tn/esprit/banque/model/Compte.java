@@ -46,8 +46,7 @@ public class Compte {
     private TypeCompte typeCompte;
 
     @Enumerated(EnumType.STRING)
-    private CategorieCompte CategorieCompte ;
-
+    private CategorieCompte categorieCompte ;
     @ManyToOne
     @JoinColumn(name = "email")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
@@ -90,14 +89,15 @@ public class Compte {
 		return numeroCompte;
 	}
 
-	public CategorieCompte getCatégorieCompte() {
-		return CatégorieCompte;
+	
+
+    public CategorieCompte getCategorieCompte() {
+		return categorieCompte;
 	}
 
-	public void setCatégorieCompte(CategorieCompte catégorieCompte) {
-		CatégorieCompte = catégorieCompte;
+	public void setCategorieCompte(CategorieCompte categorieCompte) {
+		this.categorieCompte = categorieCompte;
 	}
-
 	public void setNumeroCompte(Long numeroCompte) {
 		this.numeroCompte = numeroCompte;
 	}

@@ -14,6 +14,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,6 +28,7 @@ import tn.esprit.banque.exceptions.InvalidPasswordException;
 import tn.esprit.banque.exceptions.InvalidSwitchCaseException;
 import tn.esprit.banque.exceptions.InvalidUserException;
 import tn.esprit.banque.model.Compte;
+import tn.esprit.banque.model.Compte.CategorieCompte;
 import tn.esprit.banque.repository.CompteRepository;
 import tn.esprit.banque.service.compte.CompteContrat;
 import tn.esprit.banque.service.compte.CompteCourant;
@@ -152,6 +154,20 @@ public class CompteController {
 			}
 
 		}
+
+	}
+	@PutMapping(value = "/updateAccount", produces = "application/json", consumes = "application/json")
+	public ResponseEntity<Object> updateAccount(@Valid @RequestBody Compte updatedAccount) throws InvalidAccountException {
+		if(CompteRepo.existsById(updatedAccount.getNumeroCompte())) {
+			CompteRepo.save(updatedAccount);
+			return new ResponseEntity<>(updatedAccount, HttpStatus.OK);
+		}
+		throw new InvalidAccountException("Compte indisponible");
+	}
+	
+	@GetMapping(value = "/accounts/{category}", produces = { "application/json" })
+	public ResponseEntity<Object> getAccountsByCategory(@PathVariable("category") String category) {
+		return new ResponseEntity<>(CompteRepo.findByCategorieCompte(CategorieCompte.valueOf(category)),HttpStatus.OK);
 
 	}
 

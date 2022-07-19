@@ -11,12 +11,13 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import tn.esprit.banque.model.Compte;
+import tn.esprit.banque.model.Compte.CategorieCompte;
 
 @Repository
 public interface CompteRepository extends JpaRepository<Compte, Long> {
 
 	@Query("select c from Compte c where  c.etatCompte = true ")
     Page<Compte> findCompteParMotCle(@Param("x") String mc1,Pageable pageable);
-	List<Compte> findByCategorieCompte(String CategorieCompte);
+	List<Compte> findByCategorieCompte(CategorieCompte categorieCompte);
 
 }
