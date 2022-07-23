@@ -13,23 +13,23 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import tn.esprit.banque.service.compte.CompteContrat;
 
 import tn.esprit.banque.model.Carte;
 import tn.esprit.banque.model.Compte;
 import tn.esprit.banque.service.CarteService;
-import tn.esprit.banque.service.CompteService;
 
 @Controller
 public class CarteController {
 @Autowired
 private CarteService CarteService; 
- private CompteService CompteService; 
+ private CompteContrat compteContrat; 
  @PostMapping(value = "/addCard/{idCompte}")
 	public ResponseEntity addCard(@RequestBody Carte Carte, @PathVariable Long idCompte) {
 		Carte carte = null;
 		Compte Compte = null;
 		try {
-			Compte = CompteService.findCompteById(idCompte);
+			Compte = compteContrat.findLeCompte(idCompte);
 			Carte.setCompte(Compte);
 			carte = CarteService.addCarte(Carte);
 		} catch (Exception ex) {
@@ -69,7 +69,7 @@ private CarteService CarteService;
 		List<Carte> CardList = new ArrayList<>();
 		Compte Compte = null;
 		try {
-			Compte = CompteService.findCompteById(idCompte);
+			Compte = compteContrat.findLeCompte(idCompte);
 			CardList = Compte.getCartetList();
 		} catch (Exception ex) {
 			ex.printStackTrace();
