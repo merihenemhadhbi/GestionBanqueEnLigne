@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import tn.esprit.banque.model.Carte;
+import tn.esprit.banque.model.Compte;
 import tn.esprit.banque.repository.CarteRepository;
 @Service
 public class CarteServiceImpl implements CarteService {
@@ -37,6 +38,11 @@ CarteRepository.deleteById(id);
 	@Override
 	public Carte findCarteById(Long id) {
 		return CarteRepository.findById(id).get();
+	}
+
+	@Override
+	public List<Carte> findCarteByCompte(Compte compte) {
+		return CarteRepository.findByCompte(compte);
 	}
 
 }
