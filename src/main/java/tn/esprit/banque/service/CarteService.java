@@ -3,6 +3,7 @@ package tn.esprit.banque.service;
 import java.util.List;
 
 import tn.esprit.banque.model.Carte;
+import tn.esprit.banque.model.Compte;
 
 public interface CarteService {
 	Carte addCarte(Carte Carte);
@@ -14,4 +15,7 @@ public interface CarteService {
 	List<Carte> findAllCartes();
 
 	Carte findCarteById(Long id);
+	
+	List<Carte> findCarteByCompte(Compte compte);
+
 }
