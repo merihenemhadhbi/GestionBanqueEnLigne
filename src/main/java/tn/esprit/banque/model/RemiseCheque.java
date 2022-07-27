@@ -8,12 +8,22 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "RemiseCheque")
-public class RemiseCheque extends Operation{
+public class RemiseCheque extends Operation {
+
 	@Column(name = "num_cheque")
 	private long num_cheque;
 	@Column(name = "cin")
 	private String cin;
 	@Column(name = "date_remise")
 	private Date Date_remise;
-}	
 
+	public RemiseCheque( Date date_operation, Date date_valeur, String statut, String commentaire,
+			tn.esprit.banque.model.Compte compte) {
+		super( date_operation, date_valeur, statut, commentaire, compte);
+		// TODO Auto-generated constructor stub
+	}
+	public RemiseCheque() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+}

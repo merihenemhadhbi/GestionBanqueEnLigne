@@ -18,9 +18,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@Table(name = "Operation")
 
 public abstract class Operation {
-	 public enum statut {
+
+	public enum statut {
 	        VALIDER,WAITING,REJECTED;
 	    }
 	   @Id
@@ -38,4 +40,80 @@ public abstract class Operation {
 	   @ManyToOne
 	    @JoinColumn(name = "numeroCompte")
 	    private Compte Compte;
+	   
+	   
+	   public Operation( Date date_operation, Date date_valeur, String statut, String commentaire,
+				tn.esprit.banque.model.Compte compte) {
+			super();
+			this.date_operation = date_operation;
+			this.date_valeur = date_valeur;
+			this.statut = statut;
+			this.commentaire = commentaire;
+			Compte = compte;
+		}
+	   public Operation() {
+			super();
+			// TODO Auto-generated constructor stub
+		}
+
+
+	public Long getId_operation() {
+		return id_operation;
+	}
+
+
+	public void setId_operation(Long id_operation) {
+		this.id_operation = id_operation;
+	}
+
+
+	public Date getDate_operation() {
+		return date_operation;
+	}
+
+
+	public void setDate_operation(Date date_operation) {
+		this.date_operation = date_operation;
+	}
+
+
+	public Date getDate_valeur() {
+		return date_valeur;
+	}
+
+
+	public void setDate_valeur(Date date_valeur) {
+		this.date_valeur = date_valeur;
+	}
+
+
+	public String getStatut() {
+		return statut;
+	}
+
+
+	public void setStatut(String statut) {
+		this.statut = statut;
+	}
+
+
+	public String getCommentaire() {
+		return commentaire;
+	}
+
+
+	public void setCommentaire(String commentaire) {
+		this.commentaire = commentaire;
+	}
+
+
+	public Compte getCompte() {
+		return Compte;
+	}
+
+
+	public void setCompte(Compte compte) {
+		Compte = compte;
+	}
+	   
 }
