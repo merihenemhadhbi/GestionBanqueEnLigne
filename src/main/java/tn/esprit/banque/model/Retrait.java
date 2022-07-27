@@ -24,4 +24,16 @@ public class Retrait extends Operation {
 		super();
 		// TODO Auto-generated constructor stub
 	}
+	public long getMontant() {
+		return montant;
+	}
+	public void setMontant(long montant) {
+		this.montant = montant;
+	}
+	public Date getDate_retrait() {
+		return Date_retrait;
+	}
+	public void setDate_retrait(Date date_retrait) {
+		Date_retrait = date_retrait;
+	}
 }

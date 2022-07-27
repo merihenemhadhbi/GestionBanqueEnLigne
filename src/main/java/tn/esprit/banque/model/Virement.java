@@ -26,4 +26,22 @@ public class Virement extends Operation {
 		super();
 		// TODO Auto-generated constructor stub
 	}
+	public long getNum_compte_recepteur() {
+		return num_compte_recepteur;
+	}
+	public void setNum_compte_recepteur(long num_compte_recepteur) {
+		this.num_compte_recepteur = num_compte_recepteur;
+	}
+	public long getMontant() {
+		return montant;
+	}
+	public void setMontant(long montant) {
+		this.montant = montant;
+	}
+	public Date getDate_virement() {
+		return Date_virement;
+	}
+	public void setDate_virement(Date date_virement) {
+		Date_virement = date_virement;
+	}
 }

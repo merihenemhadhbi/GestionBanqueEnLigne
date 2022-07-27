@@ -26,4 +26,22 @@ public class RemiseCheque extends Operation {
 		super();
 		// TODO Auto-generated constructor stub
 	}
+	public long getNum_cheque() {
+		return num_cheque;
+	}
+	public void setNum_cheque(long num_cheque) {
+		this.num_cheque = num_cheque;
+	}
+	public String getCin() {
+		return cin;
+	}
+	public void setCin(String cin) {
+		this.cin = cin;
+	}
+	public Date getDate_remise() {
+		return Date_remise;
+	}
+	public void setDate_remise(Date date_remise) {
+		Date_remise = date_remise;
+	}
 }

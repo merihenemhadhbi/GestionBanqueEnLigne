@@ -26,5 +26,23 @@ public class Versement extends Operation {
 		super();
 		// TODO Auto-generated constructor stub
 	}
+	public long getMontant() {
+		return montant;
+	}
+	public void setMontant(long montant) {
+		this.montant = montant;
+	}
+	public String getCin() {
+		return cin;
+	}
+	public void setCin(String cin) {
+		this.cin = cin;
+	}
+	public String getNom_expediteur() {
+		return nom_expediteur;
+	}
+	public void setNom_expediteur(String nom_expediteur) {
+		this.nom_expediteur = nom_expediteur;
+	}
 
 }
