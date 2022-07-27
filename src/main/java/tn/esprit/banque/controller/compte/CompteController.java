@@ -1,23 +1,33 @@
 package tn.esprit.banque.controller.compte;
 
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 import tn.esprit.banque.exceptions.InvalidAccountException;
 import tn.esprit.banque.exceptions.InvalidAdminDeletionException;
@@ -29,29 +39,35 @@ import tn.esprit.banque.exceptions.InvalidSwitchCaseException;
 import tn.esprit.banque.exceptions.InvalidUserException;
 import tn.esprit.banque.model.Compte;
 import tn.esprit.banque.model.Compte.CategorieCompte;
+import tn.esprit.banque.model.Operation;
+import tn.esprit.banque.model.Utilisateur;
 import tn.esprit.banque.repository.CompteRepository;
+import tn.esprit.banque.repository.OperationRepository;
+import tn.esprit.banque.service.UtilisateurServiceImpl;
+import tn.esprit.banque.service.compte.CanvasjsChartService;
+import tn.esprit.banque.service.compte.CanvasjsChartServiceImpl.DatabaseConnectionException;
 import tn.esprit.banque.service.compte.CompteContrat;
 import tn.esprit.banque.service.compte.CompteCourant;
 import tn.esprit.banque.service.compte.CompteCreation;
 import tn.esprit.banque.service.compte.CompteEpargne;
 import tn.esprit.banque.service.compte.FabriqueCompte;
-import tn.esprit.banque.service.compte.HashPasswordContrat;
+import tn.esprit.banque.service.compte.CompteExcelExporter;
 
-@RestController
+@Controller
 public class CompteController {
 
 	@Autowired
 	private FabriqueCompte fabriqueCompte;
 	@Autowired
 	private CompteContrat compteContrat;
-	private HashPasswordContrat hashPasswordContrat;
 	@Autowired
 	private CompteRepository CompteRepo;
-
 	@Autowired
-	public void setHashPasswordContrat(HashPasswordContrat hashPasswordContrat) {
-		this.hashPasswordContrat = hashPasswordContrat;
-	}
+	private UtilisateurServiceImpl user;
+	
+	 @Autowired 
+	 private OperationRepository operation;
+	 
 
 	@PostMapping(value = "/AccountCreation", produces = "application/json", consumes = "application/json")
 	public ResponseEntity<Object> creationCompte(@Valid @RequestBody CompteCreation cmpt, BindingResult bindingResult) {
@@ -63,23 +79,32 @@ public class CompteController {
 						"Veuillez re saisir le meme mot de passe dans le champ reMotDePasse Pour la confirmation ");
 			}
 			compte.setSoldeCompte(cmpt.getSoldeCompte());
-			compte.setMotDePasse(hashPasswordContrat.hashPassword(cmpt.getMotDePasse()));
-
+			if (compte.getSoldeCompte().doubleValue() > 5000) {
+				compte.setCategorieCompte(CategorieCompte.PLATINUM);
+			} else if (compte.getSoldeCompte().doubleValue() > 2000) {
+				compte.setCategorieCompte(CategorieCompte.GOLD);
+			} else {
+				compte.setCategorieCompte(CategorieCompte.SILVER);
+			}
 			switch (cmpt.getTypecompte()) {
 			case "COURANT":
 				CompteCourant ct = (CompteCourant) fabriqueCompte.generateAccount(Compte.TypeCompte.COURANT);
-				return new ResponseEntity<>(ct.createAccount(compte, (long) 1), HttpStatus.OK);
+				return new ResponseEntity<>(
+						ct.createAccount(compte, user.findUtilisateurById(cmpt.getEmailUtilisateur()).getEmail()),
+						HttpStatus.OK);
 			case "EPARGNE":
 				CompteEpargne ep = (CompteEpargne) fabriqueCompte.generateAccount(Compte.TypeCompte.EPARGNE);
-				return new ResponseEntity<>(ep.createAccount(compte, (long) 2), HttpStatus.OK);
+				return new ResponseEntity<>(
+						ep.createAccount(compte, user.findUtilisateurById(cmpt.getEmailUtilisateur()).getEmail()),
+						HttpStatus.OK);
 			default:
 				throw new InvalidAccountException(
 						"Entrez un type du compte valide en majiscule ex: 'COURANT' 'EPARGNE' ");
 
 			}
 
-		} catch (InvalidSwitchCaseException | InvalidHashPasswordException | InvalidAmountException
-				| InvalidUserException | InvalidAccountException | InvalidPasswordException e) {
+		} catch (InvalidSwitchCaseException | InvalidAmountException | InvalidUserException | InvalidAccountException
+				| InvalidPasswordException e) {
 
 			Map<String, String> error = new HashMap<>();
 
@@ -118,14 +143,6 @@ public class CompteController {
 
 	}
 
-	/*User n'existe pas
-	 * @GetMapping(path = "/searchComptes", produces = { "application/json" })
-	public Page<Compte> chercherComptes(@RequestParam(name = "mc1", defaultValue = "") String mc1,
-			@RequestParam(name = "page", defaultValue = "0") int page,
-			@RequestParam(name = "size", defaultValue = "5") int size) {
-		return compteContrat.findCompteParMotCle("%" + mc1 + "%", page, size);
-	}*/
-
 	@PostMapping(value = "/deleteAccount", consumes = "application/json", produces = "application/json")
 	public ResponseEntity<Object> supprimerLeCompte(@Valid @RequestBody Compte compte, BindingResult bindingResult) {
 
@@ -156,19 +173,55 @@ public class CompteController {
 		}
 
 	}
+
 	@PutMapping(value = "/updateAccount", produces = "application/json", consumes = "application/json")
-	public ResponseEntity<Object> updateAccount(@Valid @RequestBody Compte updatedAccount) throws InvalidAccountException {
-		if(CompteRepo.existsById(updatedAccount.getNumeroCompte())) {
+	public ResponseEntity<Object> updateAccount(@Valid @RequestBody Compte updatedAccount)
+			throws InvalidAccountException {
+		if (CompteRepo.existsById(updatedAccount.getNumeroCompte())) {
 			CompteRepo.save(updatedAccount);
 			return new ResponseEntity<>(updatedAccount, HttpStatus.OK);
 		}
 		throw new InvalidAccountException("Compte indisponible");
 	}
-	
+
 	@GetMapping(value = "/accounts/{category}", produces = { "application/json" })
 	public ResponseEntity<Object> getAccountsByCategory(@PathVariable("category") String category) {
-		return new ResponseEntity<>(CompteRepo.findByCategorieCompte(CategorieCompte.valueOf(category)),HttpStatus.OK);
+		return new ResponseEntity<>(CompteRepo.findByCategorieCompte(CategorieCompte.valueOf(category)), HttpStatus.OK);
 
 	}
+
+	@GetMapping("/operations/export/excel")
+	public void exportToExcel(HttpServletResponse response) throws IOException {
+		response.setContentType("application/octet-stream");
+		DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+		String currentDateTime = dateFormatter.format(new Date());
+
+		String headerKey = "Content-Disposition";
+		String headerValue = "attachment; filename=operations_" + currentDateTime + ".xlsx";
+		response.setHeader(headerKey, headerValue);
+
+		List<Operation> listUsers = operation.findAll();
+
+		CompteExcelExporter excelExporter = new CompteExcelExporter(listUsers);
+
+		excelExporter.export(response);
+	}
+
+	
+		@Autowired
+		private CanvasjsChartService canvasjsChartService;
+
+		@RequestMapping(path = "/chart",method = RequestMethod.GET)
+		public String springMVC(ModelMap modelMap) {
+			List<List<Operation>> canvasjsDataList = canvasjsChartService.getCanvasjsChartData();
+			modelMap.put("dataPointsList", canvasjsDataList);
+			return "chart";
+		}
+
+		@ExceptionHandler({ DatabaseConnectionException.class })
+		public ModelAndView getSuperheroesUnavailable(DatabaseConnectionException ex) {
+			return new ModelAndView("chart", "error", ex.getMessage());
+		}
+	
 
 }

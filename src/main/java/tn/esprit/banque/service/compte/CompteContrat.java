@@ -16,7 +16,6 @@ public interface CompteContrat {
 
   
 
-	Page<Compte> findCompteParMotCle(String mc, int page, int size);
     Compte updateAccount(Compte compte, Long aId);
 
     List<Compte> allAccounts();

@@ -12,17 +12,20 @@ import tn.esprit.banque.model.Compte;
 import tn.esprit.banque.model.Utilisateur;
 import tn.esprit.banque.model.Compte.TypeCompte;
 import tn.esprit.banque.repository.CompteRepository;
+import tn.esprit.banque.repository.UtilisateurRepository;
+import tn.esprit.banque.service.UtilisateurServiceImpl;
 
 @Component
-public class CompteEpargne extends CompteAbstraction {
+public abstract class CompteEpargne extends CompteAbstraction {
 
 	private CompteRepository cptRepo;
-    
+    private UtilisateurServiceImpl user;
 
-    /*@Autowired
-    public void setUser(Utilisateur user) {
+
+   @Autowired
+    public void setUser(UtilisateurServiceImpl user) {
         this.user = user;
-    }*/
+    }
 
     @Autowired
     public void setCptDAO(CompteRepository cptRepo) {
@@ -32,13 +35,13 @@ public class CompteEpargne extends CompteAbstraction {
   
 
     @Transactional
-    public Compte createAccount(Compte compte,Long userId) throws InvalidAmountException, InvalidUserException {
+    public Compte createAccount(Compte compte,String userId) throws InvalidAmountException, InvalidUserException {
 
-        //Utilisateur utilisateur = user.findTheUser(userId);
+        Utilisateur utilisateur = user.findUtilisateurById(userId);
 
         compte.setDateCreation(new Date());
         compte.setEtatCompte(true);
-        //compte.setUtilisateur(utilisateur);
+        compte.setUtilisateur(utilisateur);
         TypeCompte typeCompte = Compte.TypeCompte.EPARGNE;
 		compte.setTypeCompte(typeCompte);
 

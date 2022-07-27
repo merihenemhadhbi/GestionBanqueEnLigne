@@ -13,18 +13,20 @@ import tn.esprit.banque.model.Compte;
 import tn.esprit.banque.model.Compte.TypeCompte;
 import tn.esprit.banque.model.Utilisateur;
 import tn.esprit.banque.repository.CompteRepository;
+import tn.esprit.banque.repository.UtilisateurRepository;
+import tn.esprit.banque.service.UtilisateurServiceImpl;
 
 @Component
-public class CompteCourant extends CompteAbstraction {
+public abstract class CompteCourant extends CompteAbstraction {
 	
 	private CompteRepository cptRepo;
-    //private Utilisateur user;
+    private UtilisateurServiceImpl user;
 
-  /*  @Autowired
-    public void setUser(Utilisateur user) {
+  @Autowired
+    public void setUser(UtilisateurServiceImpl user) {
         this.user = user;
-    }*/
-
+  
+   }
     @Autowired
     public void setCptDAO(CompteRepository cptRepo) {
         this.cptRepo = cptRepo;
@@ -33,13 +35,12 @@ public class CompteCourant extends CompteAbstraction {
   
 
     @Transactional
-    public Compte createAccount(Compte compte,Long userId) throws InvalidAmountException, InvalidUserException {
+    public Compte createAccount(Compte compte,String userId) throws InvalidAmountException, InvalidUserException {
 
-        //Utilisateur utilisateur = user.findTheUser(userId);
+    	Utilisateur utilisateur = user.findUtilisateurById(userId);
 
         compte.setDateCreation(new Date());
         compte.setEtatCompte(true);
-        Utilisateur utilisateur = null;
 		compte.setUtilisateur(utilisateur);
         TypeCompte typeCompte = Compte.TypeCompte.COURANT;
 		compte.setTypeCompte(typeCompte);
@@ -51,5 +52,5 @@ public class CompteCourant extends CompteAbstraction {
         return cptRepo.save(compte);
 
     }
-
+	
 }

@@ -8,6 +8,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import tn.esprit.banque.exceptions.InvalidAccountException;
 import tn.esprit.banque.model.Carte;
 import tn.esprit.banque.model.Compte;
 import tn.esprit.banque.model.Operation;
@@ -16,6 +17,7 @@ import tn.esprit.banque.model.Versement;
 import tn.esprit.banque.repository.CarteRepository;
 import tn.esprit.banque.repository.CompteRepository;
 import tn.esprit.banque.repository.OperationRepository;
+import tn.esprit.banque.service.compte.CompteContrat;
 import tn.esprit.banque.service.compte.CompteCourant;
 @Service
 public class OperationServiceImpl implements OperationService {
@@ -23,12 +25,17 @@ public class OperationServiceImpl implements OperationService {
 	private CompteRepository compteRepository;
 	@Autowired
 	private OperationRepository operationRepository;
-	 private CompteService CompteService;
+	 private CompteContrat CompteService;
 
 @Override
 	public void verser(Long idCpte, BigDecimal montant,String commentaire) {
 		Compte cp = null;
-		cp = CompteService.findCompteById(idCpte);
+		try {
+			cp = CompteService.findLeCompte(idCpte);
+		} catch (InvalidAccountException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		Date date =  new Date();
 		Calendar c = Calendar.getInstance(); 
 		c.setTime(date); 
@@ -44,7 +51,12 @@ public class OperationServiceImpl implements OperationService {
 	@Override
 	public void retirer(Long idCpte, BigDecimal montant, String commentaire) {
 		Compte cp = null;
-     	cp = CompteService.findCompteById(idCpte);
+     	try {
+			cp = CompteService.findLeCompte(idCpte);
+		} catch (InvalidAccountException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		BigDecimal rouge = null;
 		BigDecimal solde =cp.getSoldeCompte();
 		Date date =  new Date();
@@ -75,24 +87,36 @@ public class OperationServiceImpl implements OperationService {
 		
 	}
 
-	@Override
+	/*@Override
 	public List<Operation> listOperation(Long cpt) {
 		
 		return (List<Operation>) operationRepository.listOperation(cpt);
 	}
-
+*/
 	@Override
 	public void remiseCheque(Long cpt1, Long cpt2, BigDecimal montant, String Commentaire, Long numCheque) {
 		Compte cp = null;
 		Compte cp2 = null;
-     	cp = CompteService.findCompteById(cpt1);
-     	cp2 = CompteService.findCompteById(cpt2);
+     	try {
+			cp = CompteService.findLeCompte(cpt1);
+			cp2 = CompteService.findLeCompte(cpt2);
+		} catch (InvalidAccountException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+     	
      	if (cp.getSoldeCompte().compareTo(montant)==1 ||cp.getSoldeCompte().compareTo(montant)==0 )
 		virement(cpt1, cpt2, montant, Commentaire);
      	else 
      		//compte compteCourant
      		if (false)
      		throw new RuntimeException("Impossibile de verser le cheque numéro "+numCheque +" dans le compte" +cpt2);
+	}
+
+	@Override
+	public List<Operation> listOperation(Long cpt) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 
