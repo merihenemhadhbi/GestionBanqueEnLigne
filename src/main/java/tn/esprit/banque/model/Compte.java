@@ -15,7 +15,10 @@ import java.util.List;
 @Table(name = "Compte")
 public class Compte {
 	public enum TypeCompte {
-        EPARGNE,COURANT,ADMIN;
+        EPARGNE,COURANT;
+    }
+	public enum CategorieCompte {
+        SILVER,GOLD,PLATINUM;
     }
 
 
@@ -42,6 +45,8 @@ public class Compte {
     @Enumerated(EnumType.STRING)
     private TypeCompte typeCompte;
 
+    @Enumerated(EnumType.STRING)
+    private CategorieCompte categorieCompte ;
     @ManyToOne
     @JoinColumn(name = "email")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
@@ -84,6 +89,15 @@ public class Compte {
 		return numeroCompte;
 	}
 
+	
+
+    public CategorieCompte getCategorieCompte() {
+		return categorieCompte;
+	}
+
+	public void setCategorieCompte(CategorieCompte categorieCompte) {
+		this.categorieCompte = categorieCompte;
+	}
 	public void setNumeroCompte(Long numeroCompte) {
 		this.numeroCompte = numeroCompte;
 	}
