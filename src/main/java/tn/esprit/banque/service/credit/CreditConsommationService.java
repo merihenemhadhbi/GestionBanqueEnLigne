@@ -12,6 +12,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import tn.esprit.banque.exceptions.InvalidAccountException;
 import tn.esprit.banque.exceptions.InvalidAmountException;
@@ -20,7 +21,7 @@ import tn.esprit.banque.model.Compte;
 import tn.esprit.banque.model.Credits;
 import tn.esprit.banque.repository.CreditRepository;
 import tn.esprit.banque.service.compte.CompteContrat;
-
+@Service
 public class CreditConsommationService  extends CreditAbstractionService{
     public Double getTMM(){
 
@@ -60,7 +61,7 @@ public CreditConsommationService() {
 
 @Transactional
 	@Override
-	Credits createCredit(Credits credits, Compte compte)
+	public Credits createCredit(Credits credits, Compte compte)
 			throws InvalidAmountException, InvalidAccountException, InvalidMensualiteException {
 		// TODO Auto-generated method stub
 	credits.setCompteCredit(compte);

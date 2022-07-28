@@ -41,7 +41,7 @@ public class Credits implements Serializable  {
 	    @Temporal(TemporalType.DATE)
 	    private Date dateCredit;
 
-	    private Long mensualite;
+	    private Double mensualite;
 
 	    @NotNull(message = "Veuillez preciser le type de credit")
 	    @Enumerated(EnumType.STRING)
@@ -53,6 +53,7 @@ public class Credits implements Serializable  {
 
 	    private Long montantReglee;
 	    private Boolean Approuver = false ; 
+	    private Double interet; 
 
 	    @ManyToOne
 	    @JoinColumn(name = "numeroCompte")
@@ -60,12 +61,14 @@ public class Credits implements Serializable  {
 	    private Compte compteCredit;
 
 	
-	    public Credits(Long idCredit,
+
+
+		public Credits(Long idCredit,
 				@DecimalMin(value = "0.0", message = "Veuillez specifier un Montant superieure ou egale à zero") Long montantCredit,
-				Date dateCredit, Long mensualite,
+				Date dateCredit, Double mensualite,
 				@NotNull(message = "Veuillez preciser le type de credit") TypeCredit typeCredit,
 				Long nombreMensualitesCredit, Long montantReste, Long montantReglee, Boolean approuver,
-				Compte compteCredit) {
+				 Double interet, Compte compteCredit) {
 			super();
 			this.idCredit = idCredit;
 			this.montantCredit = montantCredit;
@@ -76,6 +79,7 @@ public class Credits implements Serializable  {
 			this.montantReste = montantReste;
 			this.montantReglee = montantReglee;
 			Approuver = approuver;
+			this.interet = interet;
 			this.compteCredit = compteCredit;
 		}
 
@@ -83,7 +87,17 @@ public class Credits implements Serializable  {
 
 	    }
 
-	    public Boolean getApprouver() {
+	   
+
+		public Double getInteret() {
+			return interet;
+		}
+
+		public void setInteret(Double interet) {
+			this.interet = interet;
+		}
+
+		public Boolean getApprouver() {
 			return Approuver;
 		}
 
@@ -115,11 +129,11 @@ public class Credits implements Serializable  {
 	        this.dateCredit = dateCredit;
 	    }
 
-	    public Long getMensualite() {
+	    public Double getMensualite() {
 	        return mensualite;
 	    }
 
-	    public void setMensualite(Long mensualite) {
+	    public void setMensualite(Double mensualite) {
 	        this.mensualite = mensualite;
 	    }
 

@@ -35,33 +35,7 @@ public class CreditContratServiceImpl implements CreditContratService
         this.creditRepository = creditRepository;
     }
 
-	@Override
-	public Credits updateCredit(Credits credits) {
-		// TODO Auto-generated method stub
-		return creditRepository.save(credits);
-	}
-
-	@Override
-	public List<Credits> allCredits() {
-		// TODO Auto-generated method stub
-		return (List<Credits>) creditRepository.findAll();
-	}
-	   public boolean lessThan(Long one , Long two){
-	        return one <= two;
-	    }
-
-	@Override
-	public Credits reglerUneMensualite(Long idCredit, BigDecimal mensualite) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Credits findUnCredit(Long id) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
+	
 	}
 
 
