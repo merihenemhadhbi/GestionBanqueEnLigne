@@ -26,6 +26,8 @@ public class Physique extends Utilisateur {
 	private String civilite; 
 	@Column(name = "nationalite")
 	private String nationalite;
+	@Column(name = "nb_enfant")
+	private int nb_enfant;
 	
 	
 	public Physique() {
@@ -43,7 +45,7 @@ public class Physique extends Utilisateur {
 	
 	
 	public Physique(String email, String email2, String cin, String nom, String prenom, String salaire, String societe,
-			String civilite, String nationalite) {
+			String civilite, String nationalite,int nb_enfant) {
 		super(email);
 		email = email2;
 		this.cin = cin;
@@ -53,6 +55,17 @@ public class Physique extends Utilisateur {
 		this.societe = societe;
 		this.civilite = civilite;
 		this.nationalite = nationalite;
+		this.nb_enfant = nb_enfant;
+	}
+
+
+	public int getNb_enfant() {
+		return nb_enfant;
+	}
+
+
+	public void setNb_enfant(int nb_enfant) {
+		this.nb_enfant = nb_enfant;
 	}
 
 

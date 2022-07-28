@@ -27,6 +27,8 @@ import org.springframework.security.ldap.authentication.BindAuthenticator;
 import org.springframework.security.ldap.authentication.LdapAuthenticationProvider;
 import org.springframework.security.ldap.authentication.LdapAuthenticator;
 import org.springframework.security.ldap.server.UnboundIdContainer;
+import org.springframework.security.ldap.userdetails.DefaultLdapAuthoritiesPopulator;
+import org.springframework.security.ldap.userdetails.LdapAuthoritiesPopulator;
 import org.springframework.security.ldap.userdetails.PersonContextMapper;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -61,13 +63,14 @@ public class SecurityConfig {
 	@Bean
 	BindAuthenticator authenticator(BaseLdapPathContextSource contextSource) {
 		BindAuthenticator authenticator = new BindAuthenticator(contextSource);
-		authenticator.setUserDnPatterns(new String[] { "uid={0},ou=people" });
+		authenticator.setUserDnPatterns(new String[] { "uid={0},ou=morale","uid={0},ou=physique","uid={0},ou=employee" });
 		return authenticator;
 	}
 
 	@Bean
-	LdapAuthenticationProvider authenticationProvider(LdapAuthenticator authenticator) {
-		LdapAuthenticationProvider provider = new LdapAuthenticationProvider(authenticator);
+	LdapAuthenticationProvider authenticationProvider(LdapAuthenticator authenticator,BaseLdapPathContextSource contextSource) {
+		LdapAuthoritiesPopulator authorities = 	new DefaultLdapAuthoritiesPopulator(contextSource, "ou=groups");	
+		LdapAuthenticationProvider provider = new LdapAuthenticationProvider(authenticator,authorities);
 		provider.setUserDetailsContextMapper(new PersonContextMapper());
 		return provider;
 	}
