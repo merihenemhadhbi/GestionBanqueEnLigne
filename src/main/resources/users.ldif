@@ -1,41 +1,181 @@
-dn: ou=groups,dc=esprit,dc=tn
-objectclass: top
-objectclass: organizationalUnit
-ou: groups
 
-dn: ou=people,dc=esprit,dc=tn
-objectclass: top
-objectclass: organizationalUnit
-ou: people
 
-dn: uid=yassin.zouari@esprit.tn,ou=people,dc=esprit,dc=tn
-objectclass: top
-objectclass: person
-objectclass: organizationalPerson
-objectclass: inetOrgPerson
-cn: zouari
-sn: yassin
-uid: yassin.zouari@esprit.tn
+dn: ou=groups,dc=esprit, dc=tn
+ou: morale
+objectClass: top
+objectClass: organizationalUnit
 
-dn: uid=sawsan.sfaihi@esprit.tn,ou=people,dc=esprit,dc=tn
-objectclass: top
-objectclass: person
-objectclass: organizationalPerson
-objectclass: inetOrgPerson
-cn: sfaihi
-sn: sawsan
-uid: sawsan.sfaihi@esprit.tn
-userPassword: ssfaihi
+dn: ou=morale,dc=esprit, dc=tn
+ou: morale
+objectClass: top
+objectClass: organizationalUnit
 
-dn: cn=user,ou=groups,dc=esprit,dc=tn
+dn: ou=physique,dc=esprit, dc=tn
+ou: physique
+objectClass: top
+objectClass: organizationalUnit
+
+dn: ou=employee,dc=esprit, dc=tn
+ou: employee
+objectClass: top
+objectClass: organizationalUnit
+
+dn: uid=mmhadhbi,ou=physique,dc=esprit,dc=tn
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+cn: merihene mhadhbi
+sn: mhadhbi
+description: 11111111
+facsimileTelephoneNumber: +1 510 668-4508
+l: soussa
+ou: physique
+postalAddress: physique$soussa
+telephoneNumber: +1 510 805-4238
+title: Junior physique agent
+userPassword: Password1
+uid: mmhadhbi
+givenName: merihene
+mail: merihene.mhadhbi@esprit.tn
+carLicense: TUV9PW
+departmentNumber: 6898
+employeeType: Employee
+homePhone: +1 510 621-6540
+initials: m. m.
+mobile: +1 510 521-6220
+pager: +1 510 300-4822
+roomNumber: 8917
+
+dn: uid=mhwideg,ou=morale,dc=esprit,dc=tn
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+uid: mhwideg
+cn: monji hwideg
+sn: hwideg
+description: 11111111
+facsimileTelephoneNumber: +1 213 821-9342
+l: tunis
+ou: morale
+postalAddress: physique$tunis
+telephoneNumber: +1 213 858-7435
+title: 845638984
+userPassword: Password1
+givenName: monji
+mail: monji.hwideg@esprit.tn
+carLicense: PTKU1K
+departmentNumber: 6465
+employeeType: Employee
+homePhone: +1 213 255-2639
+initials: m. h.
+mobile: +1 213 386-6972
+pager: +1 213 572-7176
+roomNumber: 8729
+
+dn: uid=ssfaihis,ou=physique,dc=esprit,dc=tn
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+cn: sawsan sfaihi
+sn: sfaihi
+description: 11111111
+facsimileTelephoneNumber: +1 804 130-5001
+l: korba
+ou: physique
+postalAddress: physique$korba
+telephoneNumber: +1 804 546-2861
+title: Chief physique agent
+userPassword: Password1
+uid: ssfaihis
+givenName: sawsan
+mail: sawsan.sfaihi@esprit.tn
+carLicense: KJID9T
+departmentNumber: 5394
+employeeType: Employee
+homePhone: +1 804 334-6205
+initials: s. s.
+mobile: +1 804 951-4736
+pager: +1 804 308-6885
+roomNumber: 8693
+
+dn: uid=achikhaoui,ou=employee,dc=esprit,dc=tn
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+cn: achref chikhaoui
+sn: chikhaoui
+description: 11111111
+facsimileTelephoneNumber: +1 510 724-9356
+l: korba
+ou: physique
+postalAddress: physique$korba
+telephoneNumber: +1 510 589-6560
+title: Junior physique agent
+userPassword: Password1
+uid: achikhaoui
+givenName: achref
+mail: achref.chikhaoui@esprit.tn
+carLicense: TWF36P
+departmentNumber: 6532
+employeeType: Employee
+homePhone: +1 510 467-6629
+initials: s. h.
+mobile: +1 510 663-5648
+pager: +1 510 343-3132
+roomNumber: 8662
+
+dn: uid=yzouari,ou=employee,dc=esprit,dc=tn
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+cn: yassin zouari
+sn: zouari
+description: 11044408
+facsimileTelephoneNumber: +1 408 952-1159
+l: tunis
+ou: physique
+postalAddress: physique$tunis
+telephoneNumber: +1 408 821-9497
+title: Master physique agent
+userPassword: Password1
+uid: yzouari
+givenName: yassin
+mail: yzouari@esprit.tn
+carLicense: NH20TG
+departmentNumber: 8265
+employeeType: Employee
+homePhone: +1 408 691-8651
+initials: s. m.
+mobile: +1 408 555-2505
+pager: +1 408 886-2573
+roomNumber: 9352
+
+dn: cn=physique,ou=groups,dc=esprit,dc=tn
 objectclass: top
 objectclass: groupOfNames
-cn: user
-member: uid=admin,ou=people,dc=esprit,dc=tn
-member: uid=user,ou=people,dc=esprit,dc=tn
+cn: physique
+member: uid=mmhadhbi,ou=physique,dc=esprit,dc=tn
+member: uid=ssfaihis,ou=physique,dc=esprit,dc=tn
 
 dn: cn=admin,ou=groups,dc=esprit,dc=tn
 objectclass: top
 objectclass: groupOfNames
 cn: admin
-member: uid=admin,ou=people,dc=esprit,dc=tn
+member: uid=yzouari,ou=physique,dc=esprit,dc=tn
+
+dn: cn=morale,ou=groups,dc=esprit,dc=tn
+objectclass: top
+objectclass: groupOfNames
+cn: morale
+member: uid=mhwideg,ou=physique,dc=esprit,dc=tn
+
+dn: cn=agent,ou=groups,dc=esprit,dc=tn
+objectclass: top
+objectclass: groupOfNames
+cn: morale
+member: uid=achikhaoui,ou=physique,dc=esprit,dc=tn

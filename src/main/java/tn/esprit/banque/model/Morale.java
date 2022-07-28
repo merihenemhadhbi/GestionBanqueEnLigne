@@ -16,6 +16,10 @@ public class Morale extends Utilisateur{
 	private String num_registe_commerce;
 	
 	
+	public Morale() {
+		super();
+	}
+
 	public Morale(String email, String matricule_Fiscale, String capitale_Sociale, String num_registe_commerce) {
 		super(email);
 		this.matricule_Fiscale = matricule_Fiscale;

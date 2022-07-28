@@ -12,19 +12,18 @@ public class Employee extends Utilisateur{
 	private String nom;
 	@Column(name = "prenom")
 	private String prenom;
-	@Column(name = "role")
-	private String role;
 	@Id
 	@Column(name = "email")
 	private String email;
 	
+	public Employee() {
+		super();
+	}
 	
-	
-	public Employee(String email, String nom, String prenom, String role, String email2) {
+	public Employee(String email, String nom, String prenom, String email2) {
 		super(email);
 		this.nom = nom;
 		this.prenom = prenom;
-		this.role = role;
 		email = email2;
 	}
 	public String getNom() {
@@ -38,12 +37,6 @@ public class Employee extends Utilisateur{
 	}
 	public void setPrenom(String prenom) {
 		this.prenom = prenom;
-	}
-	public String getRole() {
-		return role;
-	}
-	public void setRole(String role) {
-		this.role = role;
 	}
 	public String getEmail() {
 		return email;
