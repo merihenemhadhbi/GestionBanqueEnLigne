@@ -12,5 +12,7 @@ public abstract class CreditAbstractionService {
 
 	abstract public Credits createCredit(Credits credits, Compte compte)
 			throws InvalidAmountException, InvalidAccountException, InvalidMensualiteException;
+	abstract	public Credits affectercredit(Long idCredit) ;
+	abstract	public Credits Createothercredit(Credits nv_credit, Long idCompte) ;
 
 }

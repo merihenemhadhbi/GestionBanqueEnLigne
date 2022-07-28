@@ -19,80 +19,147 @@ import tn.esprit.banque.exceptions.InvalidAmountException;
 import tn.esprit.banque.exceptions.InvalidMensualiteException;
 import tn.esprit.banque.model.Compte;
 import tn.esprit.banque.model.Credits;
+import tn.esprit.banque.repository.CompteRepository;
 import tn.esprit.banque.repository.CreditRepository;
 import tn.esprit.banque.service.compte.CompteContrat;
+
 @Service
-public class CreditConsommationService  extends CreditAbstractionService{
-    public Double getTMM(){
+public class CreditConsommationService extends CreditAbstractionService {
+	public Double getTMM() {
 
-	      Document doc = null;
-	    try {
-	        doc = Jsoup.connect("https://www.bct.gov.tn/bct/siteprod/tableau_statistique_a.jsp?params=PL203105&la=AR").get();
-	    } catch (IOException e) {
-	        e.printStackTrace();
-	    }
-	        Elements tableRows = doc.select(".bct-table-fixed table tr");
-	        Double lastValue = 0d;
-	        for (Element tableRow : tableRows) {
-	            String rowData = tableRow.text();
-	            if (rowData.split(" ").length == 7){
-	                lastValue = Double.parseDouble(rowData.split(" ")[6]);
-	            }
-	        }
-	        return lastValue;
+		Document doc = null;
+		try {
+			doc = Jsoup.connect("https://www.bct.gov.tn/bct/siteprod/tableau_statistique_a.jsp?params=PL203105&la=AR")
+					.get();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		Elements tableRows = doc.select(".bct-table-fixed table tr");
+		Double lastValue = 0d;
+		for (Element tableRow : tableRows) {
+			String rowData = tableRow.text();
+			if (rowData.split(" ").length == 7) {
+				lastValue = Double.parseDouble(rowData.split(" ")[6]);
+			}
+		}
+		return lastValue;
 
-	    }
-private CreditRepository creditRepository; 
-private CompteContrat compteContrat; 
-
-
-@Autowired
-public void setCreditRepository(CreditRepository creditRepository) {
-	this.creditRepository = creditRepository;
-}
-
-@Autowired
-public void setCompteContrat(CompteContrat compteContrat) {
-	this.compteContrat = compteContrat;
-}
-public CreditConsommationService() {
-	credit=Credits.TypeCredit.CONSOMMATION;
 	}
 
-@Transactional
+	private CreditRepository creditRepository;
+	@Autowired 
+	private CompteRepository compteRepository;
+	private CompteContrat compteContrat;
+
+	@Autowired
+	public void setCreditRepository(CreditRepository creditRepository) {
+		this.creditRepository = creditRepository;
+	}
+
+	@Autowired
+	public void setCompteContrat(CompteContrat compteContrat) {
+		this.compteContrat = compteContrat;
+	}
+
+	public CreditConsommationService() {
+		credit = Credits.TypeCredit.CONSOMMATION;
+	}
+
+	@Transactional
 	@Override
 	public Credits createCredit(Credits credits, Compte compte)
 			throws InvalidAmountException, InvalidAccountException, InvalidMensualiteException {
 		// TODO Auto-generated method stub
-	credits.setCompteCredit(compte);
-	credits.setDateCredit(new Date());
-	credits.setTypeCredit(credit);
+		credits.setCompteCredit(compte);
+		credits.setDateCredit(new Date());
+		credits.setTypeCredit(credit);
 
-    if(!compte.isEtatCompte()){
-        throw new InvalidAccountException("Compte n'est plus disponible veuillez contacter votre agence");
-    }else if ( credits.getMontantCredit().longValue() <= 1000 || credits.getMontantCredit().longValue() > 5000){
-        throw new InvalidAmountException("Montant specifié est supérieur à 1000 et ne dépasse pas 5000");
-    }else if ( credits.getNombreMensualitesCredit() > 36 ){
-        throw new InvalidMensualiteException("Veuillez saisir une mensualité ne dépasse pas  3 ans ");
-    }else {
-     
-        Long TMM =(long) 0.09;
+		if (!compte.isEtatCompte()) {
+			throw new InvalidAccountException("Compte n'est plus disponible veuillez contacter votre agence");
+		} else if (credits.getMontantCredit().longValue() <= 1000 || credits.getMontantCredit().longValue() > 5000) {
+			throw new InvalidAmountException("Montant specifié est supérieur à 1000 et ne dépasse pas 5000");
+		} else if (credits.getNombreMensualitesCredit() > 36) {
+			throw new InvalidMensualiteException("Veuillez saisir une mensualité ne dépasse pas  3 ans ");
+		} else {
 
-        if (credits.getNombreMensualitesCredit() > 12){
-        	Long interet= TMM /100; 
-        	Long MontantSansInteret= credits.getMontantCredit();
-         Long MontantAvecInteret= MontantSansInteret+(MontantSansInteret+interet);
-         Long MontantApayerMensuelle = MontantAvecInteret/credits.getNombreMensualitesCredit(); 
-         credits.setMensualite(MontantApayerMensuelle);
-         Long MontantMax= compte.getSoldeCompte().longValue()*40/100 ;
-if(MontantMax >= MontantApayerMensuelle  ) {
-	credits.setApprouver(true); 
-}else {
-	credits.setApprouver(false);}
-        }
-		return creditRepository.save(credits);
+			Double TMM = getTMM();
+
+			if (credits.getNombreMensualitesCredit() >= 12 && credits.getNombreMensualitesCredit() <= 36) {
+				Double interet = (TMM + 2) / 100;
+				Double MontantSansInteret = credits.getMontantCredit();
+				Double MontantAvecInteret = MontantSansInteret + (MontantSansInteret + interet);
+				Double MontantApayerMensuelle = MontantAvecInteret / credits.getNombreMensualitesCredit();
+				credits.setMensualite(MontantApayerMensuelle);
+				Long MontantMax = compte.getSoldeCompte().longValue() * 40 / 100;
+				if (MontantMax >= MontantApayerMensuelle) {
+					credits.setApprouver(true);
+				} else {
+					credits.setApprouver(false);
+				}
+			}
+			return creditRepository.save(credits);
+
+		}
 
 	}
 
-}
+	@Override
+	public Credits affectercredit(Long idCredit) {
+		Credits credit = creditRepository.findById(idCredit).get();
+
+		double montantMaxApayer = (credit.getCompteCredit().getSoldeCompte().doubleValue() * 40) / 100;
+
+		if (credit.getMensualite() <= montantMaxApayer) {
+			int nombreEnfant;
+			Double restSolde = credit.getCompteCredit().getSoldeCompte().doubleValue() - credit.getMensualite();
+			// Double salairesuff = (credit.getCompteCredit().getUtilisateur() * 150) + 400;
+
+			// if (restSolde >= salairesuff) {
+			credit.setApprouver(true);
+			return creditRepository.save(credit);
+		}
+
+		else
+			credit.setApprouver(false);
+		return creditRepository.save(credit);
+
+	}
+
+	@Override
+	public Credits Createothercredit(Credits nv_credit, Long idCompte) {
+
+		Compte compte = compteRepository.findById(idCompte).get();
+		Credits Ac_credit = creditRepository.findById(idCompte).get();
+
+		if (Ac_credit.getApprouver().equals(true)) {
+			double montantpaye, rest, newmontant;
+			montantpaye = Ac_credit.getMensualite() * nv_credit.getNombreMensualitesCredit();
+			rest = Ac_credit.getMontantCredit() - montantpaye;
+			newmontant = Ac_credit.getMontantCredit() - rest;
+			if (newmontant > 0) {
+				nv_credit.setApprouver(true);
+				nv_credit.setCompteCredit(compte);
+				nv_credit.setMontantCredit(newmontant);
+
+				Double TMM = getTMM();
+
+				if (nv_credit.getNombreMensualitesCredit() >= 12 && nv_credit.getNombreMensualitesCredit() <= 36) {
+					Double interet = (TMM + 2) / 100;
+					Double MontantSansInteret = nv_credit.getMontantCredit();
+					Double MontantAvecInteret = MontantSansInteret + (MontantSansInteret + interet);
+					Double MontantApayerMensuelle = MontantAvecInteret / nv_credit.getNombreMensualitesCredit();
+					nv_credit.setMensualite(MontantApayerMensuelle);
+					Long MontantMax = compte.getSoldeCompte().longValue() * 40 / 100;
+					if (MontantMax >= MontantApayerMensuelle) {
+						nv_credit.setApprouver(true);
+					} else {
+						nv_credit.setApprouver(false);
+					}
+				}
+
+			}
+
+		}				return creditRepository.save(nv_credit);
+
+	}
 }

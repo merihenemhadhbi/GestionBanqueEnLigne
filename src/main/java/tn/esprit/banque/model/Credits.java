@@ -36,7 +36,7 @@ public class Credits implements Serializable  {
 	    private Long idCredit;
 
 	    @DecimalMin(value = "0.0",message = "Veuillez specifier un Montant superieure ou egale à zero")
-	    private Long montantCredit;
+	    private Double montantCredit;
 
 	    @Temporal(TemporalType.DATE)
 	    private Date dateCredit;
@@ -64,7 +64,7 @@ public class Credits implements Serializable  {
 
 
 		public Credits(Long idCredit,
-				@DecimalMin(value = "0.0", message = "Veuillez specifier un Montant superieure ou egale à zero") Long montantCredit,
+				@DecimalMin(value = "0.0", message = "Veuillez specifier un Montant superieure ou egale à zero") Double montantCredit,
 				Date dateCredit, Double mensualite,
 				@NotNull(message = "Veuillez preciser le type de credit") TypeCredit typeCredit,
 				Long nombreMensualitesCredit, Long montantReste, Long montantReglee, Boolean approuver,
@@ -113,11 +113,11 @@ public class Credits implements Serializable  {
 	        this.idCredit = idCredit;
 	    }
 
-	    public Long getMontantCredit() {
+	    public Double getMontantCredit() {
 	        return montantCredit;
 	    }
 
-	    public void setMontantCredit(Long montantCredit) {
+	    public void setMontantCredit(Double montantCredit) {
 	        this.montantCredit = montantCredit;
 	    }
 

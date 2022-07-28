@@ -19,6 +19,7 @@ import tn.esprit.banque.exceptions.InvalidAmountException;
 import tn.esprit.banque.exceptions.InvalidMensualiteException;
 import tn.esprit.banque.model.Compte;
 import tn.esprit.banque.model.Credits;
+import tn.esprit.banque.repository.CompteRepository;
 import tn.esprit.banque.repository.CreditRepository;
 import tn.esprit.banque.service.compte.CompteContrat;
 
@@ -46,8 +47,11 @@ public class CreditImmobilierService extends CreditAbstractionService {
 		return lastValue;
 
 	}
-
+	@Autowired
 	private CreditRepository creditRepository;
+	@Autowired
+	CompteRepository compteRepository;
+	
 	private CompteContrat compteContrat;
 
 	@Autowired
@@ -83,7 +87,7 @@ public class CreditImmobilierService extends CreditAbstractionService {
 			Double TMM = getTMM();
 			if (credits.getNombreMensualitesCredit() <= 84) {
 				Double interet = (TMM+2)/100;
-				Long MontantSansInteret = credits.getMontantCredit();
+				Double MontantSansInteret = credits.getMontantCredit();
 				Double MontantAvecInteret = MontantSansInteret + (MontantSansInteret + interet);
 				Double MontantApayerMensuelle = MontantAvecInteret / credits.getNombreMensualitesCredit();
 				credits.setMensualite(MontantApayerMensuelle);
@@ -94,7 +98,7 @@ public class CreditImmobilierService extends CreditAbstractionService {
 			} else if (credits.getNombreMensualitesCredit() > 84 && credits.getNombreMensualitesCredit() <= 180) {
 
 				Double interet =  ((TMM + 2.25) / 100);
-				Long MontantSansInteret = credits.getMontantCredit();
+				Double MontantSansInteret = credits.getMontantCredit();
 				Double MontantAvecInteret = MontantSansInteret + (MontantSansInteret + interet);
 				Double MontantApayerMensuelle = MontantAvecInteret / credits.getNombreMensualitesCredit();
 				credits.setMensualite(MontantApayerMensuelle);
@@ -105,7 +109,7 @@ public class CreditImmobilierService extends CreditAbstractionService {
 			} else if (credits.getNombreMensualitesCredit() > 180 && credits.getNombreMensualitesCredit() <= 240) {
 
 				Double interet =  ((TMM + 2.5) / 100);
-				Long MontantSansInteret = credits.getMontantCredit();
+				Double MontantSansInteret = credits.getMontantCredit();
 				Double MontantAvecInteret = MontantSansInteret + (MontantSansInteret + interet);
 				Double MontantApayerMensuelle = MontantAvecInteret / credits.getNombreMensualitesCredit();
 				credits.setMensualite(MontantApayerMensuelle);
@@ -117,5 +121,82 @@ public class CreditImmobilierService extends CreditAbstractionService {
 		return creditRepository.save(credits);
 	}
 	
+	@Override
+	public Credits affectercredit(Long idCredit) {
+		Credits credit = creditRepository.findById(idCredit).get();
+
+		double montantMaxApayer  = (credit.getCompteCredit().getSoldeCompte().doubleValue() * 40) / 100; 
+		
+		if (credit.getMensualite() <= montantMaxApayer) {
+			int nombreEnfant;
+	       Double restSolde = credit.getCompteCredit().getSoldeCompte().doubleValue() - credit.getMensualite();
+			//Double salairesuff = (credit.getCompteCredit().getUtilisateur() * 150) + 400;
+
+		//	if (restSolde >= salairesuff) {
+				credit.setApprouver(true);
+				return creditRepository.save(credit);
+			}
+
+			else
+				credit.setApprouver(false);
+			return creditRepository.save(credit);
+
+		}
+  
+	
+	@Override
+	public Credits Createothercredit(Credits nv_credit, Long idCompte) {
+
+		Compte compte =compteRepository.findById(idCompte).get();
+		Credits Ac_credit = creditRepository.findById(idCompte).get();
+
+		if (Ac_credit.getApprouver().equals(true)) {
+			double montantpaye, rest, newmontant;
+			montantpaye = Ac_credit.getMensualite() * nv_credit.getNombreMensualitesCredit();
+			rest = Ac_credit.getMontantCredit() - montantpaye;
+			newmontant = Ac_credit .getMontantCredit() - rest;
+			if (newmontant > 0) {
+				nv_credit.setApprouver(true);
+				nv_credit.setCompteCredit(compte);
+				nv_credit.setMontantCredit(newmontant);
+
+				Double TMM = getTMM();
+				if (nv_credit.getNombreMensualitesCredit() <= 84) {
+					Double interet = (TMM+2)/100;
+					Double MontantSansInteret = nv_credit.getMontantCredit();
+					Double MontantAvecInteret = MontantSansInteret + (MontantSansInteret + interet);
+					Double MontantApayerMensuelle = MontantAvecInteret / nv_credit.getNombreMensualitesCredit();
+					nv_credit.setMensualite(MontantApayerMensuelle);
+					nv_credit.setInteret(interet);
+					System.out.print(interet);
+				
+
+				} else if (nv_credit.getNombreMensualitesCredit() > 84 && nv_credit.getNombreMensualitesCredit() <= 180) {
+
+					Double interet =  ((TMM + 2.25) / 100);
+					Double MontantSansInteret = nv_credit.getMontantCredit();
+					Double MontantAvecInteret = MontantSansInteret + (MontantSansInteret + interet);
+					Double MontantApayerMensuelle = MontantAvecInteret / nv_credit.getNombreMensualitesCredit();
+					nv_credit.setMensualite(MontantApayerMensuelle);
+					nv_credit.setInteret(interet);
+
+				
+
+				} else if (nv_credit.getNombreMensualitesCredit() > 180 && nv_credit.getNombreMensualitesCredit() <= 240) {
+
+					Double interet =  ((TMM + 2.5) / 100);
+					Double MontantSansInteret = nv_credit.getMontantCredit();
+					Double MontantAvecInteret = MontantSansInteret + (MontantSansInteret + interet);
+					Double MontantApayerMensuelle = MontantAvecInteret / nv_credit.getNombreMensualitesCredit();
+					nv_credit.setMensualite(MontantApayerMensuelle);
+					nv_credit.setInteret(interet);
+
+				}
+
+			}
 
 }
+		return creditRepository.save(nv_credit);
+
+	}
+	}
