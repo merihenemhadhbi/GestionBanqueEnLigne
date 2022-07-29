@@ -4,9 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
@@ -20,9 +18,6 @@ import tn.esprit.banque.model.Virement;
 public class CanvasjsChartServiceImpl implements CanvasjsChartService  {
 	
 	private static JdbcTemplate jdbcTemplate;
-	static Map<Object,Object> map = null;
-	static List<List<Operation>> list = new ArrayList<List<Operation>>();
-	static List<Operation> dataPoints1 = new ArrayList<Operation>();
 	
 	static {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
@@ -45,7 +40,9 @@ public class CanvasjsChartServiceImpl implements CanvasjsChartService  {
 	@Override
 	public List<List<Operation>>  getCanvasjsChartData() {
 		
-		
+		 List<List<Operation>> list = new ArrayList<List<Operation>>();
+		 List<Operation> dataPoints1 = new ArrayList<Operation>();
+		 List<Operation> finalList = new ArrayList<Operation>();
 String versement = "select * from versement";
 String virement = "select * from virement";
 String retrait = "select * from retrait";
@@ -68,7 +65,7 @@ String retrait = "select * from retrait";
         	throw new DatabaseConnectionException("Error while getting dataPoints");
         }
         if(!dataPoints1.isEmpty()) {
-			list.add(dataPoints1);
+        	finalList.addAll(dataPoints1);
 		}
 		// virement
 		try {
@@ -89,7 +86,7 @@ String retrait = "select * from retrait";
         	throw new DatabaseConnectionException("Error while getting dataPoints");
         }
 		if(!dataPoints1.isEmpty()) {
-			list.add(dataPoints1);
+        	finalList.addAll(dataPoints1);
 		}
 		// retrait
 		
@@ -111,7 +108,10 @@ String retrait = "select * from retrait";
         	throw new DatabaseConnectionException("Error while getting dataPoints");
         }
 		if(!dataPoints1.isEmpty()) {
-			list.add(dataPoints1);
+        	finalList.addAll(dataPoints1);
+		}
+		if(!finalList.isEmpty()) {
+			list.add(finalList);
 		}
 		return list;
 	}

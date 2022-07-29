@@ -9,10 +9,9 @@ import org.springframework.transaction.annotation.Transactional;
 import tn.esprit.banque.exceptions.InvalidAmountException;
 import tn.esprit.banque.exceptions.InvalidUserException;
 import tn.esprit.banque.model.Compte;
-import tn.esprit.banque.model.Utilisateur;
 import tn.esprit.banque.model.Compte.TypeCompte;
+import tn.esprit.banque.model.Utilisateur;
 import tn.esprit.banque.repository.CompteRepository;
-import tn.esprit.banque.repository.UtilisateurRepository;
 import tn.esprit.banque.service.UtilisateurServiceImpl;
 
 @Component

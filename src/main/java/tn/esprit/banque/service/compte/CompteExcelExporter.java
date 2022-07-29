@@ -3,6 +3,7 @@ package tn.esprit.banque.service.compte;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.List;
 
 import javax.servlet.ServletOutputStream;
@@ -15,7 +16,6 @@ import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import tn.esprit.banque.model.Compte;
 import tn.esprit.banque.model.Operation;
 import tn.esprit.banque.model.Retrait;
 import tn.esprit.banque.model.Versement;
@@ -62,6 +62,8 @@ public class CompteExcelExporter {
 			cell.setCellValue((Date) value);
 		}else if(value instanceof BigDecimal) {
 			cell.setCellValue((String) ((BigDecimal)value).toString());
+		}else if(value instanceof Timestamp) {
+			cell.setCellValue((Timestamp) value);
 		}else {
 			cell.setCellValue((String) value);
 		}
@@ -82,7 +84,7 @@ public class CompteExcelExporter {
 
 			createCell(row, columnCount++, operations.getId_operation(), style);
 			createCell(row, columnCount++, operations.getStatut(), style);
-			createCell(row, columnCount++, operations.getDate_operation(), style);
+			createCell(row, columnCount++, operations.getDate_operation().toGMTString(), style);
 			if( operations instanceof Versement) {
 				createCell(row, columnCount++, ((Versement)operations).getMontant(), style);
 
