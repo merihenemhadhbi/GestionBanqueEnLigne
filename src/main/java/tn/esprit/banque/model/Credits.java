@@ -3,7 +3,7 @@ package tn.esprit.banque.model;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
-import javax.validation.constraints.DecimalMin;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -14,166 +14,159 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.TableGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "Credit")
-public class Credits implements Serializable  {
-	    public enum TypeCredit {
-	        IMMOBILIER,CONSOMMATION;
-	    }
+public class Credits implements Serializable {
+	public enum TypeCredit {
+		IMMOBILIER, CONSOMMATION;
+	}
 
-	    @Id
-		@GeneratedValue(strategy = GenerationType.AUTO)
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
 
-	    private Long idCredit;
+	private Long idCredit;
 
-	    @DecimalMin(value = "0.0",message = "Veuillez specifier un Montant superieure ou egale à zero")
-	    private Double montantCredit;
+	@DecimalMin(value = "0.0", message = "Veuillez specifier un Montant superieure ou egale à zero")
+	private Double montantCredit;
 
-	    @Temporal(TemporalType.DATE)
-	    private Date dateCredit;
+	@Temporal(TemporalType.DATE)
+	private Date dateCredit;
 
-	    private Double mensualite;
+	private Double mensualite;
 
-	    @NotNull(message = "Veuillez preciser le type de credit")
-	    @Enumerated(EnumType.STRING)
-	    private TypeCredit typeCredit;
+	@NotNull(message = "Veuillez preciser le type de credit")
+	@Enumerated(EnumType.STRING)
+	private TypeCredit typeCredit;
 
-	    private Long nombreMensualitesCredit;
+	private Long nombreMensualitesCredit;
 
-	    private Long montantReste;
+	private Long montantReste;
 
-	    private Long montantReglee;
-	    private Boolean Approuver = false ; 
-	    private Double interet; 
+	private Long montantReglee;
+	private Boolean Approuver = false;
+	private BigDecimal interet;
 
-	    @ManyToOne
-	    @JoinColumn(name = "numeroCompte")
-	    @JsonIgnore
-	    private Compte compteCredit;
+	@ManyToOne
+	@JoinColumn(name = "numeroCompte")
+	@JsonIgnore
+	private Compte compteCredit;
 
-	
+	public Credits(Long idCredit,
+			@DecimalMin(value = "0.0", message = "Veuillez specifier un Montant superieure ou egale à zero") Double montantCredit,
+			Date dateCredit, Double mensualite,
+			@NotNull(message = "Veuillez preciser le type de credit") TypeCredit typeCredit,
+			Long nombreMensualitesCredit, Long montantReste, Long montantReglee, Boolean approuver, BigDecimal interet,
+			Compte compteCredit) {
+		super();
+		this.idCredit = idCredit;
+		this.montantCredit = montantCredit;
+		this.dateCredit = dateCredit;
+		this.mensualite = mensualite;
+		this.typeCredit = typeCredit;
+		this.nombreMensualitesCredit = nombreMensualitesCredit;
+		this.montantReste = montantReste;
+		this.montantReglee = montantReglee;
+		Approuver = approuver;
+		this.interet = interet;
+		this.compteCredit = compteCredit;
+	}
 
+	public Credits() {
 
-		public Credits(Long idCredit,
-				@DecimalMin(value = "0.0", message = "Veuillez specifier un Montant superieure ou egale à zero") Double montantCredit,
-				Date dateCredit, Double mensualite,
-				@NotNull(message = "Veuillez preciser le type de credit") TypeCredit typeCredit,
-				Long nombreMensualitesCredit, Long montantReste, Long montantReglee, Boolean approuver,
-				 Double interet, Compte compteCredit) {
-			super();
-			this.idCredit = idCredit;
-			this.montantCredit = montantCredit;
-			this.dateCredit = dateCredit;
-			this.mensualite = mensualite;
-			this.typeCredit = typeCredit;
-			this.nombreMensualitesCredit = nombreMensualitesCredit;
-			this.montantReste = montantReste;
-			this.montantReglee = montantReglee;
-			Approuver = approuver;
-			this.interet = interet;
-			this.compteCredit = compteCredit;
-		}
+	}
 
-		public Credits(){
+	public BigDecimal getInteret() {
+		return interet;
+	}
 
-	    }
+	public void setInteret(BigDecimal interet) {
+		this.interet = interet;
+	}
 
-	   
+	public Boolean getApprouver() {
+		return Approuver;
+	}
 
-		public Double getInteret() {
-			return interet;
-		}
+	public void setApprouver(Boolean approuver) {
+		Approuver = approuver;
+	}
 
-		public void setInteret(Double interet) {
-			this.interet = interet;
-		}
+	public Long getIdCredit() {
+		return idCredit;
+	}
 
-		public Boolean getApprouver() {
-			return Approuver;
-		}
+	public void setIdCredit(Long idCredit) {
+		this.idCredit = idCredit;
+	}
 
-		public void setApprouver(Boolean approuver) {
-			Approuver = approuver;
-		}
+	public Double getMontantCredit() {
+		return montantCredit;
+	}
 
-		public Long getIdCredit() {
-	        return idCredit;
-	    }
+	public void setMontantCredit(Double montantCredit) {
+		this.montantCredit = montantCredit;
+	}
 
-	    public void setIdCredit(Long idCredit) {
-	        this.idCredit = idCredit;
-	    }
+	public Date getDateCredit() {
+		return dateCredit;
+	}
 
-	    public Double getMontantCredit() {
-	        return montantCredit;
-	    }
+	public void setDateCredit(Date dateCredit) {
+		this.dateCredit = dateCredit;
+	}
 
-	    public void setMontantCredit(Double montantCredit) {
-	        this.montantCredit = montantCredit;
-	    }
+	public Double getMensualite() {
+		return mensualite;
+	}
 
-	    public Date getDateCredit() {
-	        return dateCredit;
-	    }
+	public void setMensualite(Double mensualite) {
+		this.mensualite = mensualite;
+	}
 
-	    public void setDateCredit(Date dateCredit) {
-	        this.dateCredit = dateCredit;
-	    }
+	public TypeCredit getTypeCredit() {
+		return typeCredit;
+	}
 
-	    public Double getMensualite() {
-	        return mensualite;
-	    }
+	public void setTypeCredit(TypeCredit typeCredit) {
+		this.typeCredit = typeCredit;
+	}
 
-	    public void setMensualite(Double mensualite) {
-	        this.mensualite = mensualite;
-	    }
+	public Long getNombreMensualitesCredit() {
+		return nombreMensualitesCredit;
+	}
 
-	    public TypeCredit getTypeCredit() {
-	        return typeCredit;
-	    }
+	public void setNombreMensualitesCredit(Long nombreMensualitesCredit) {
+		this.nombreMensualitesCredit = nombreMensualitesCredit;
+	}
 
-	    public void setTypeCredit(TypeCredit typeCredit) {
-	        this.typeCredit = typeCredit;
-	    }
+	public Long getMontantReste() {
+		return montantReste;
+	}
 
-	    public Long getNombreMensualitesCredit() {
-	        return nombreMensualitesCredit;
-	    }
+	public void setMontantReste(Long montantReste) {
+		this.montantReste = montantReste;
+	}
 
-	    public void setNombreMensualitesCredit(Long nombreMensualitesCredit) {
-	        this.nombreMensualitesCredit = nombreMensualitesCredit;
-	    }
+	public Long getMontantReglee() {
+		return montantReglee;
+	}
 
-	    public Long getMontantReste() {
-	        return montantReste;
-	    }
+	public void setMontantReglee(Long montantReglee) {
+		this.montantReglee = montantReglee;
+	}
 
-	    public void setMontantReste(Long montantReste) {
-	        this.montantReste = montantReste;
-	    }
+	public Compte getCompteCredit() {
+		return compteCredit;
+	}
 
-	    public Long getMontantReglee() {
-	        return montantReglee;
-	    }
-
-	    public void setMontantReglee(Long montantReglee) {
-	        this.montantReglee = montantReglee;
-	    }
-
-	    public Compte getCompteCredit() {
-	        return compteCredit;
-	    }
-
-	    public void setCompteCredit(Compte compteCredit) {
-	        this.compteCredit = compteCredit;
-	    }
+	public void setCompteCredit(Compte compteCredit) {
+		this.compteCredit = compteCredit;
+	}
 }
