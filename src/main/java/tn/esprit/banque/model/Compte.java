@@ -48,7 +48,7 @@ public class Compte {
     @Enumerated(EnumType.STRING)
     private CategorieCompte categorieCompte ;
     @ManyToOne
-    @JoinColumn(name = "email")
+    @JoinColumn(name = "username")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Utilisateur utilisateur;
 

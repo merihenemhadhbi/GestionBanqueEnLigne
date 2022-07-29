@@ -1,5 +1,3 @@
-
-
 dn: ou=groups,dc=esprit, dc=tn
 ou: morale
 objectClass: top
@@ -74,7 +72,7 @@ mobile: +1 213 386-6972
 pager: +1 213 572-7176
 roomNumber: 8729
 
-dn: uid=ssfaihis,ou=physique,dc=esprit,dc=tn
+dn: uid=ssfaihi,ou=physique,dc=esprit,dc=tn
 objectClass: top
 objectClass: person
 objectClass: organizationalPerson
@@ -89,7 +87,7 @@ postalAddress: physique$korba
 telephoneNumber: +1 804 546-2861
 title: Chief physique agent
 userPassword: Password1
-uid: ssfaihis
+uid: ssfaihi
 givenName: sawsan
 mail: sawsan.sfaihi@esprit.tn
 carLicense: KJID9T
@@ -111,7 +109,7 @@ sn: chikhaoui
 description: 11111111
 facsimileTelephoneNumber: +1 510 724-9356
 l: korba
-ou: physique
+ou: agent
 postalAddress: physique$korba
 telephoneNumber: +1 510 589-6560
 title: Junior physique agent
@@ -138,7 +136,7 @@ sn: zouari
 description: 11044408
 facsimileTelephoneNumber: +1 408 952-1159
 l: tunis
-ou: physique
+ou: admin
 postalAddress: physique$tunis
 telephoneNumber: +1 408 821-9497
 title: Master physique agent
@@ -166,16 +164,16 @@ dn: cn=admin,ou=groups,dc=esprit,dc=tn
 objectclass: top
 objectclass: groupOfNames
 cn: admin
-member: uid=yzouari,ou=physique,dc=esprit,dc=tn
+member: uid=yzouari,ou=employee,dc=esprit,dc=tn
 
 dn: cn=morale,ou=groups,dc=esprit,dc=tn
 objectclass: top
 objectclass: groupOfNames
 cn: morale
-member: uid=mhwideg,ou=physique,dc=esprit,dc=tn
+member: uid=mhwideg,ou=morale,dc=esprit,dc=tn
 
 dn: cn=agent,ou=groups,dc=esprit,dc=tn
 objectclass: top
 objectclass: groupOfNames
 cn: morale
-member: uid=achikhaoui,ou=physique,dc=esprit,dc=tn
+member: uid=achikhaoui,ou=employee,dc=esprit,dc=tn

@@ -18,7 +18,7 @@ import tn.esprit.banque.repository.CarteRepository;
 import tn.esprit.banque.repository.CompteRepository;
 import tn.esprit.banque.repository.OperationRepository;
 import tn.esprit.banque.service.compte.CompteContrat;
-import tn.esprit.banque.service.compte.CompteCourant;
+import tn.esprit.banque.CompteCourant;
 @Service
 public class OperationServiceImpl implements OperationService {
 	@Autowired

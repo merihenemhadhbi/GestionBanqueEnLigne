@@ -16,12 +16,16 @@
 
 package tn.esprit.banque.security;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.ldap.core.ContextSource;
 import org.springframework.ldap.core.support.BaseLdapPathContextSource;
+import org.springframework.security.authentication.AuthenticationEventPublisher;
+import org.springframework.security.authentication.DefaultAuthenticationEventPublisher;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.config.ldap.EmbeddedLdapServerContextSourceFactoryBean;
 import org.springframework.security.ldap.DefaultSpringSecurityContextSource;
 import org.springframework.security.ldap.authentication.BindAuthenticator;
 import org.springframework.security.ldap.authentication.LdapAuthenticationProvider;
@@ -48,6 +52,11 @@ public class SecurityConfig {
     }
 	
 	@Bean
+	public EmbeddedLdapServerContextSourceFactoryBean contextSourceFactoryBean() {
+		return EmbeddedLdapServerContextSourceFactoryBean.fromEmbeddedLdapServer();
+	}
+	
+	@Bean
 	UnboundIdContainer ldapContainer() {
 		UnboundIdContainer container = new UnboundIdContainer("dc=esprit,dc=tn", "classpath:users.ldif");
 		container.setPort(0);
@@ -71,8 +80,14 @@ public class SecurityConfig {
 	LdapAuthenticationProvider authenticationProvider(LdapAuthenticator authenticator,BaseLdapPathContextSource contextSource) {
 		LdapAuthoritiesPopulator authorities = 	new DefaultLdapAuthoritiesPopulator(contextSource, "ou=groups");	
 		LdapAuthenticationProvider provider = new LdapAuthenticationProvider(authenticator,authorities);
-		provider.setUserDetailsContextMapper(new PersonContextMapper());
+		provider.setUserDetailsContextMapper(new UserContextMapper());
 		return provider;
+	}
+	
+	@Bean
+	public AuthenticationEventPublisher authenticationEventPublisher
+	        (ApplicationEventPublisher applicationEventPublisher) {
+	    return new DefaultAuthenticationEventPublisher(applicationEventPublisher);
 	}
 
 }

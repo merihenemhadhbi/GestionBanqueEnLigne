@@ -1,48 +1,44 @@
-package tn.esprit.banque.service.compte;
+package tn.esprit.banque;
 
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import tn.esprit.banque.exceptions.InvalidAmountException;
 import tn.esprit.banque.exceptions.InvalidUserException;
 import tn.esprit.banque.model.Compte;
-import tn.esprit.banque.model.Utilisateur;
 import tn.esprit.banque.model.Compte.TypeCompte;
+import tn.esprit.banque.model.Utilisateur;
 import tn.esprit.banque.repository.CompteRepository;
-import tn.esprit.banque.repository.UtilisateurRepository;
 import tn.esprit.banque.service.UtilisateurServiceImpl;
+import tn.esprit.banque.CompteAbstraction;
 
 @Component
-public abstract class CompteEpargne extends CompteAbstraction {
-
+public class CompteCourant extends CompteAbstraction {
+	
+	@Autowired
 	private CompteRepository cptRepo;
     private UtilisateurServiceImpl user;
 
-
-   @Autowired
+    @Autowired
     public void setUser(UtilisateurServiceImpl user) {
         this.user = user;
-    }
-
-    @Autowired
-    public void setCptDAO(CompteRepository cptRepo) {
-        this.cptRepo = cptRepo;
-    }
-
   
+   }
+
+    public CompteCourant() {
+    	super();
+    }
 
     @Transactional
-    public Compte createAccount(Compte compte,String userId) throws InvalidAmountException, InvalidUserException {
-
-        Utilisateur utilisateur = user.findUtilisateurById(userId);
-
-        compte.setDateCreation(new Date());
+    public Compte createAccount(Compte compte,Utilisateur utilisateur) throws InvalidAmountException, InvalidUserException {
+    	compte.setDateCreation(new Date());
         compte.setEtatCompte(true);
-        compte.setUtilisateur(utilisateur);
-        TypeCompte typeCompte = Compte.TypeCompte.EPARGNE;
+		compte.setUtilisateur(utilisateur);
+        TypeCompte typeCompte = Compte.TypeCompte.COURANT;
 		compte.setTypeCompte(typeCompte);
 
         if ( compte.getSoldeCompte().longValue() < 0 ){
@@ -52,6 +48,5 @@ public abstract class CompteEpargne extends CompteAbstraction {
         return cptRepo.save(compte);
 
     }
-
-
+	
 }

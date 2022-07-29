@@ -33,8 +33,8 @@ public class UtilisateurServiceImpl implements UtilisateurService {
 	}
 
 	@Override
-	public Utilisateur findUtilisateurById(String email) {
-		return utilisateurRepository.findById(email).get();
+	public Utilisateur findUtilisateurById(String username) {
+		return utilisateurRepository.findById(username).get();
 	}
 
 }

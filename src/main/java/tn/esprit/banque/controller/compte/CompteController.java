@@ -47,17 +47,14 @@ import tn.esprit.banque.service.UtilisateurServiceImpl;
 import tn.esprit.banque.service.compte.CanvasjsChartService;
 import tn.esprit.banque.service.compte.CanvasjsChartServiceImpl.DatabaseConnectionException;
 import tn.esprit.banque.service.compte.CompteContrat;
-import tn.esprit.banque.service.compte.CompteCourant;
+import tn.esprit.banque.CompteCourant;
 import tn.esprit.banque.service.compte.CompteCreation;
-import tn.esprit.banque.service.compte.CompteEpargne;
-import tn.esprit.banque.service.compte.FabriqueCompte;
+import tn.esprit.banque.CompteEpargne;
 import tn.esprit.banque.service.compte.CompteExcelExporter;
 
 @Controller
 public class CompteController {
 
-	@Autowired
-	private FabriqueCompte fabriqueCompte;
 	@Autowired
 	private CompteContrat compteContrat;
 	@Autowired
@@ -67,7 +64,13 @@ public class CompteController {
 	
 	 @Autowired 
 	 private OperationRepository operation;
+	
+	 @Autowired
+	 CompteCourant ct;
 	 
+	 @Autowired
+	 CompteEpargne ep;
+
 
 	@PostMapping(value = "/AccountCreation", produces = "application/json", consumes = "application/json")
 	public ResponseEntity<Object> creationCompte(@Valid @RequestBody CompteCreation cmpt, BindingResult bindingResult) {
@@ -78,6 +81,7 @@ public class CompteController {
 				throw new InvalidPasswordException(
 						"Veuillez re saisir le meme mot de passe dans le champ reMotDePasse Pour la confirmation ");
 			}
+			compte.setMotDePasse(cmpt.getMotDePasse());
 			compte.setSoldeCompte(cmpt.getSoldeCompte());
 			if (compte.getSoldeCompte().doubleValue() > 5000) {
 				compte.setCategorieCompte(CategorieCompte.PLATINUM);
@@ -88,14 +92,12 @@ public class CompteController {
 			}
 			switch (cmpt.getTypecompte()) {
 			case "COURANT":
-				CompteCourant ct = (CompteCourant) fabriqueCompte.generateAccount(Compte.TypeCompte.COURANT);
 				return new ResponseEntity<>(
-						ct.createAccount(compte, user.findUtilisateurById(cmpt.getEmailUtilisateur()).getEmail()),
+						ct.createAccount(compte, user.findUtilisateurById(cmpt.getUsername())),
 						HttpStatus.OK);
 			case "EPARGNE":
-				CompteEpargne ep = (CompteEpargne) fabriqueCompte.generateAccount(Compte.TypeCompte.EPARGNE);
 				return new ResponseEntity<>(
-						ep.createAccount(compte, user.findUtilisateurById(cmpt.getEmailUtilisateur()).getEmail()),
+						ep.createAccount(compte, user.findUtilisateurById(cmpt.getUsername())),
 						HttpStatus.OK);
 			default:
 				throw new InvalidAccountException(
@@ -103,7 +105,7 @@ public class CompteController {
 
 			}
 
-		} catch (InvalidSwitchCaseException | InvalidAmountException | InvalidUserException | InvalidAccountException
+		} catch ( InvalidAmountException | InvalidUserException | InvalidAccountException
 				| InvalidPasswordException e) {
 
 			Map<String, String> error = new HashMap<>();
