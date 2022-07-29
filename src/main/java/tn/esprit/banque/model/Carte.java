@@ -1,12 +1,15 @@
 package tn.esprit.banque.model;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 
@@ -20,17 +23,23 @@ public class Carte {
 	private Date date_expiration;
 	@Column(name = "cvv")
 	private String cvv;
+	@Column(name = "carte_Plafond")
+	private Long carte_Plafond;
 	 @ManyToOne
 	    @JoinColumn(name = "numeroCompte")
 	    private Compte compte;
+	 @OneToMany(mappedBy = "id_retrait")
+	    private List<RetraitATM> retraitList = new ArrayList<>();
 
-	public Carte(Long num_carte,Date date_expiration, String cvv,	Compte compte) {
-	super();
-	this.num_carte = num_carte;
-	this.date_expiration = date_expiration;
-	this.cvv = cvv;
-	this.compte = compte;
-}
+public Carte(Long num_carte, Date date_expiration, String cvv, Long carte_Plafond, Compte compte) {
+		super();
+		this.num_carte = num_carte;
+		this.date_expiration = date_expiration;
+		this.cvv = cvv;
+		this.carte_Plafond = carte_Plafond;
+		this.compte = compte;
+	}
+
 public Carte() {}
 
 	public Long getNum_carte() {
@@ -57,6 +66,13 @@ public Carte() {}
 		this.cvv = cvv;
 	}
 
+	public Long getcarte_Plafond() {
+		return carte_Plafond;
+	}
+	public void setcarte_Plafond(Long carte_Plafond) {
+		this.carte_Plafond = carte_Plafond;
+	}
+
 	public Compte getCompte() {
 		return this.compte;
 	}
@@ -65,8 +81,13 @@ public Carte() {}
 		this.compte = compte;
 	}
 
+	public List<RetraitATM> getRetraitList() {
+		return retraitList;
+	}
 
-	
+	public void setRetraitList(List<RetraitATM> retraitList) {
+		this.retraitList = retraitList;
+	}
 
 
 		

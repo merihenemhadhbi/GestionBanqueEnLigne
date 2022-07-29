@@ -21,11 +21,11 @@ import tn.esprit.banque.service.PostService;
 
 @Controller
 public class CommentaireController {
-@Autowired
-private CommentaireService commentaireService; 
- @Autowired
- private PostService postService; 
- @PostMapping(value = "/addComment/{idPost}")
+	@Autowired
+	private CommentaireService commentaireService;
+	@Autowired
+	private PostService postService;
+	@PostMapping(value = "/addCommentaire/{idPost}")
 	public ResponseEntity addComment(@RequestBody Commentaire commentaire, @PathVariable Long idPost) {
 		Commentaire commentairePostSave = null;
 		Post post = null;
@@ -39,7 +39,7 @@ private CommentaireService commentaireService;
 		}
 		return ResponseEntity.status(HttpStatus.CREATED).body(commentairePostSave);
 	}
- @PutMapping(value = "/updateCommentaire")
+	@PutMapping(value = "/updateCommentaire")
 	public ResponseEntity updateCommentaire(@RequestBody Commentaire commentaire) {
 		Commentaire commentairePostSave = null;
 		Post post = null;
@@ -65,7 +65,7 @@ private CommentaireService commentaireService;
 		return ResponseEntity.status(HttpStatus.OK).body("Comment deleted");
 	}
 
-	@GetMapping(value = "/findAllCommentsByTopic/{idPost}")
+	@GetMapping(value = "/findAllCommentairesByPost/{idPost}")
 	public ResponseEntity findAllComments(@PathVariable Long idPost) {
 		List<Commentaire> commentList = new ArrayList<>();
 		Post post = null;
