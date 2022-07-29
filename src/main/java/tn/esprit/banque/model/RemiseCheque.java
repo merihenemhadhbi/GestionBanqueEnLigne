@@ -16,6 +16,8 @@ public class RemiseCheque extends Operation {
 	private String cin;
 	@Column(name = "date_remise")
 	private Date Date_remise;
+	@Column(name = "montant")
+	private long montant;
 
 	public RemiseCheque( Date date_operation, Date date_valeur, String statut, String commentaire,
 			tn.esprit.banque.model.Compte compte) {
@@ -43,5 +45,11 @@ public class RemiseCheque extends Operation {
 	}
 	public void setDate_remise(Date date_remise) {
 		Date_remise = date_remise;
+	}
+	public long getMontant() {
+		return montant;
+	}
+	public void setMontant(long montant) {
+		this.montant=montant; 
 	}
 }

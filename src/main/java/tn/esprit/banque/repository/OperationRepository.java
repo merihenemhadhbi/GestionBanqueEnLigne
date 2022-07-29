@@ -1,5 +1,6 @@
 package tn.esprit.banque.repository;
 
+import java.sql.Date;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -18,9 +19,7 @@ import tn.esprit.banque.model.Versement;
 @Repository
 public interface OperationRepository extends JpaRepository<Operation, Long> {
 
-	/*@Query("select o from Operation o where o.compte.codeCompte =:x order by o.dateOperation desc")
-	public Page<Operation> listOperation(@Param("x")Long cpt);
-	*/
 	
-
+	
+	
 }
