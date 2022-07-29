@@ -12,10 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import tn.esprit.banque.model.Employee;
 import tn.esprit.banque.model.Morale;
 import tn.esprit.banque.model.Physique;
-import tn.esprit.banque.model.Post;
-import tn.esprit.banque.model.Utilisateur;
 import tn.esprit.banque.service.UtilisateurService;
-import tn.esprit.banque.service.UtilisateurServiceImpl;
 
 @Controller
 public class UtilisateurController {
