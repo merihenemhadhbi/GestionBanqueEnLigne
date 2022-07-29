@@ -47,9 +47,15 @@ public class Physique extends Utilisateur {
 	}
 
 
-	public Physique(String email, String email2, String cin, String nom, String prenom) {
+	public Physique(String email, String cin, String nom, String prenom) {
 		super(email);
-		email = email2;
+		this.cin = cin;
+		this.nom = nom;
+		this.prenom = prenom;
+	}
+	
+	public Physique(String username, String email, String cin, String nom, String prenom,String password) {
+		super(username, password, true, true, true, false);
 		this.cin = cin;
 		this.nom = nom;
 		this.prenom = prenom;

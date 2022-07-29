@@ -1,19 +1,19 @@
-dn: ou=groups,dc=esprit, dc=tn
+dn: ou=groups,dc=esprit,dc=tn
 ou: morale
 objectClass: top
 objectClass: organizationalUnit
 
-dn: ou=morale,dc=esprit, dc=tn
+dn: ou=morale,dc=esprit,dc=tn
 ou: morale
 objectClass: top
 objectClass: organizationalUnit
 
-dn: ou=physique,dc=esprit, dc=tn
+dn: ou=physique,dc=esprit,dc=tn
 ou: physique
 objectClass: top
 objectClass: organizationalUnit
 
-dn: ou=employee,dc=esprit, dc=tn
+dn: ou=employee,dc=esprit,dc=tn
 ou: employee
 objectClass: top
 objectClass: organizationalUnit

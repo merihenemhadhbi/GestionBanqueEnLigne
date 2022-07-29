@@ -12,19 +12,25 @@ public class UtilisateurServiceImpl implements UtilisateurService {
 
 	@Autowired
 	UtilisateurRepository utilisateurRepository;
+	@Autowired
+	LdapUtilisateurService ldapUtilisateurService;
 	@Override
 	public Utilisateur addUtilisateur(Utilisateur utilisateur) {
+		ldapUtilisateurService.create(utilisateur);
 		return utilisateurRepository.save(utilisateur);
 	}
 
 	@Override
 	public Utilisateur updateUtilisateur(Utilisateur utilisateur) {
+		ldapUtilisateurService.update(utilisateur);
 		return utilisateurRepository.save(utilisateur);
 	}
 
 	@Override
-	public void deleteUtilisateur(String email) {
-		utilisateurRepository.deleteById(email);
+	public void deleteUtilisateur(String username) {
+		Utilisateur user = utilisateurRepository.findById(username).isPresent()?utilisateurRepository.findById(username).get():null;
+		ldapUtilisateurService.delete(user);
+		utilisateurRepository.deleteById(username);
 	}
 
 	@Override

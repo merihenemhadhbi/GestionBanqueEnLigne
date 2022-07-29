@@ -19,6 +19,8 @@ public class Morale extends Utilisateur{
 	private String capitale_Sociale;
 	@Column(name = "num_registe_commerce")
 	private String num_registe_commerce;
+	@Column(name = "nom")
+	private String nom;
 	
 	
 	public Morale() {
@@ -29,14 +31,32 @@ public class Morale extends Utilisateur{
 			boolean accountNonExpired, boolean accountNonLocked, boolean credentialsNonExpired, boolean enabled) {
 		super(username, password, accountNonExpired, accountNonLocked, credentialsNonExpired, enabled);
 	}
+	
+	public Morale(String username, String email, String matricule_Fiscale, String nom, String num_registe_commerce,String password) {
+		super(username, password, true, true, true, false);
+		this.matricule_Fiscale = matricule_Fiscale;
+		this.num_registe_commerce = num_registe_commerce;
+		this.nom = nom;
+	}
 
-	public Morale(String email, String matricule_Fiscale, String capitale_Sociale, String num_registe_commerce) {
+	public Morale(String email,String nom, String matricule_Fiscale, String capitale_Sociale, String num_registe_commerce) {
 		super(email);
 		this.matricule_Fiscale = matricule_Fiscale;
 		this.capitale_Sociale = capitale_Sociale;
 		this.num_registe_commerce = num_registe_commerce;
+		this.nom = nom;
 	}
 	
+	
+	
+	public String getNom() {
+		return nom;
+	}
+
+	public void setNom(String nom) {
+		this.nom = nom;
+	}
+
 	public String getMatricule_Fiscale() {
 		return matricule_Fiscale;
 	}
@@ -62,6 +82,7 @@ public class Morale extends Utilisateur{
 		int result = super.hashCode();
 		result = prime * result + ((matricule_Fiscale == null) ? 0 : matricule_Fiscale.hashCode());
 		result = prime * result + ((num_registe_commerce == null) ? 0 : num_registe_commerce.hashCode());
+		result = prime * result + ((nom == null) ? 0 : nom.hashCode());
 		return result;
 	}
 
@@ -76,6 +97,11 @@ public class Morale extends Utilisateur{
 			if (other.getAdresse() != null)
 				return false;
 		} else if (!getAdresse().equals(other.getAdresse()))
+			return false;
+		if (nom == null) {
+			if (other.nom != null)
+				return false;
+		} else if (!nom.equals(other.nom))
 			return false;
 		if (getEmail() == null) {
 			if (other.getEmail() != null)

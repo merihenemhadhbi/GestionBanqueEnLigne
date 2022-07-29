@@ -53,7 +53,7 @@ public abstract class Utilisateur implements UserDetails {
 	private boolean credentialsNonExpired = true;
 
 	@Transient
-	private boolean enabled = true;
+	private boolean enabled = false;
 
 	@OneToMany(mappedBy = "numeroCompte")
 	private List<Compte> comptetList = new ArrayList<>();
