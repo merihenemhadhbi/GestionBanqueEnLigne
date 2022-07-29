@@ -9,16 +9,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import tn.esprit.banque.exceptions.InvalidAccountException;
-import tn.esprit.banque.model.Carte;
 import tn.esprit.banque.model.Compte;
 import tn.esprit.banque.model.Operation;
 import tn.esprit.banque.model.Retrait;
 import tn.esprit.banque.model.Versement;
-import tn.esprit.banque.repository.CarteRepository;
 import tn.esprit.banque.repository.CompteRepository;
 import tn.esprit.banque.repository.OperationRepository;
 import tn.esprit.banque.service.compte.CompteContrat;
-import tn.esprit.banque.CompteCourant;
 @Service
 public class OperationServiceImpl implements OperationService {
 	@Autowired

@@ -1,4 +1,4 @@
-package tn.esprit.banque;
+package tn.esprit.banque.service.compte;
 
 import tn.esprit.banque.exceptions.InvalidAmountException;
 import tn.esprit.banque.exceptions.InvalidUserException;

@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -14,8 +15,15 @@ var chart = new CanvasJS.Chart("chartContainer", {
 	theme: "light2", // "light1", "dark1", "dark2"
 	animationEnabled: true,
 	title: {
-		text: "Column Chart from Database"
+		text: "Operation History"
 	},
+	axisX:{      
+        valueFormatString: "DD-MMM" ,
+        labelAngle: -50
+    },
+    axisY: {
+      valueFormatString: "#,###"
+  },
 	data: [{
 		type: "column",
 		dataPoints: dps[0]
@@ -29,12 +37,11 @@ var yValue;
 <c:forEach items="${dataPointsList}" var="dataPoints" varStatus="loop">	
 	<c:forEach items="${dataPoints}" var="dataPoint">
 		xValue = parseInt("${dataPoint.montant}");
-		console.log(xValue);
-		console.log("${loop.index}");
-		console.log("${dataPointsList}");
+		yValue = new Date("${dataPoint.date_operation}" );
 		dps[parseInt("${loop.index}")].push({
-			x : xValue,
-			y : "null",
+			x : yValue,
+			y : xValue,
+			
 		});		
 	</c:forEach>	
 </c:forEach> 
@@ -55,4 +62,4 @@ chart.render();
 	</c:if>
 	<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 </body>
-</html>       
+</html>         

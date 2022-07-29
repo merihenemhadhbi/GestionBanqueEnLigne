@@ -26,7 +26,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import tn.esprit.banque.exceptions.InvalidAccountException;
@@ -35,21 +34,19 @@ import tn.esprit.banque.exceptions.InvalidAmountException;
 import tn.esprit.banque.exceptions.InvalidConfirmationException;
 import tn.esprit.banque.exceptions.InvalidHashPasswordException;
 import tn.esprit.banque.exceptions.InvalidPasswordException;
-import tn.esprit.banque.exceptions.InvalidSwitchCaseException;
 import tn.esprit.banque.exceptions.InvalidUserException;
 import tn.esprit.banque.model.Compte;
 import tn.esprit.banque.model.Compte.CategorieCompte;
 import tn.esprit.banque.model.Operation;
-import tn.esprit.banque.model.Utilisateur;
 import tn.esprit.banque.repository.CompteRepository;
 import tn.esprit.banque.repository.OperationRepository;
 import tn.esprit.banque.service.UtilisateurServiceImpl;
 import tn.esprit.banque.service.compte.CanvasjsChartService;
 import tn.esprit.banque.service.compte.CanvasjsChartServiceImpl.DatabaseConnectionException;
 import tn.esprit.banque.service.compte.CompteContrat;
-import tn.esprit.banque.CompteCourant;
+import tn.esprit.banque.service.compte.CompteCourant;
 import tn.esprit.banque.service.compte.CompteCreation;
-import tn.esprit.banque.CompteEpargne;
+import tn.esprit.banque.service.compte.CompteEpargne;
 import tn.esprit.banque.service.compte.CompteExcelExporter;
 
 @Controller

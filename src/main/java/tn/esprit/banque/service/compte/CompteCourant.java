@@ -1,4 +1,4 @@
-package tn.esprit.banque;
+package tn.esprit.banque.service.compte;
 
 import java.util.Date;
 
@@ -14,7 +14,7 @@ import tn.esprit.banque.model.Compte.TypeCompte;
 import tn.esprit.banque.model.Utilisateur;
 import tn.esprit.banque.repository.CompteRepository;
 import tn.esprit.banque.service.UtilisateurServiceImpl;
-import tn.esprit.banque.CompteAbstraction;
+import tn.esprit.banque.service.compte.CompteAbstraction;
 
 @Component
 public class CompteCourant extends CompteAbstraction {

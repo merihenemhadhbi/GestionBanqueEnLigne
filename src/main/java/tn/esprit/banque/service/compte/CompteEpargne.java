@@ -1,4 +1,4 @@
-package tn.esprit.banque;
+package tn.esprit.banque.service.compte;
 
 import java.util.Date;
 
