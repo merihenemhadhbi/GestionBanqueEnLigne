@@ -21,6 +21,7 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.ldap.core.AttributesMapper;
 import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.ldap.support.LdapNameBuilder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.unboundid.ldap.sdk.Entry;
@@ -42,6 +43,9 @@ public class LdapUtilisateurService implements LdapUtilisateurRepository {
 	private ResourceLoader resourceLoader;
 	@Autowired
 	private LdapTemplate ldapTemplate;
+	
+	@Autowired
+	PasswordEncoder passwordEncoder;
 
 	@Override
 	public List<String> getAllUtilisateurNames() {
@@ -105,7 +109,7 @@ public class LdapUtilisateurService implements LdapUtilisateurRepository {
 		Entry entry = buildEntry(dn, user);
 		try {
 			Resource resource = resourceLoader.getResource("classpath:/users.ldif");
-			Map<String, Entry> list = getAllEntry(resource);
+			Map<String, Entry> list = getAllEntry(resource,user);
 			OutputStream output = new FileOutputStream(resource.getFile());
 			LDIFWriter ldifWriter = new LDIFWriter(output);
 			list.values().forEach(c -> {
@@ -132,7 +136,7 @@ public class LdapUtilisateurService implements LdapUtilisateurRepository {
 		Entry entry = buildEntry(dn, user);
 		try {
 			Resource resource = resourceLoader.getResource("classpath:/users.ldif");
-			Map<String, Entry> list = getAllEntry(resource);
+			Map<String, Entry> list = getAllEntry(resource,user);
 			OutputStream output = new FileOutputStream(resource.getFile());
 			LDIFWriter ldifWriter = new LDIFWriter(output);
 			list.values().forEach(c -> {
@@ -160,12 +164,15 @@ public class LdapUtilisateurService implements LdapUtilisateurRepository {
 		ldapTemplate.unbind(dn);
 		Resource resource = resourceLoader.getResource("classpath:/users.ldif");
 		try {
-			Map<String, Entry> list = getAllEntry(resource);
+			Map<String, Entry> list = getAllEntry(resource,user);
 			OutputStream output = new FileOutputStream(resource.getFile());
 			LDIFWriter ldifWriter = new LDIFWriter(output);
 			list.remove(dn.toString() + ",dc=esprit,dc=tn");
 			list.values().forEach(c -> {
 				try {
+					if(c.getAttribute("objectclass").hasValue("groupOfNames")) {
+						c.removeAttributeValue("member", dn.toString() + ",dc=esprit,dc=tn");
+					}
 					ldifWriter.writeEntry(c);
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -201,7 +208,7 @@ public class LdapUtilisateurService implements LdapUtilisateurRepository {
 		ocAttr.add("inetOrgPerson");
 		attrs.put(ocAttr);
 		attrs.put("uid", user.getUsername());
-		attrs.put("userPassword", user.getPassword());
+		attrs.put("userPassword", passwordEncoder.encode(user.getPassword()));
 		attrs.put("mail", user.getEmail());
 		if (user instanceof Physique) {
 			attrs.put("ou", "physique");
@@ -209,11 +216,17 @@ public class LdapUtilisateurService implements LdapUtilisateurRepository {
 			attrs.put("cn", ((Physique) user).getPrenom() + ((Physique) user).getNom());
 			attrs.put("givenName", ((Physique) user).getPrenom());
 		}
-		if (user instanceof Morale) {
+		else if (user instanceof Morale) {
 			attrs.put("ou", "morale");
 			attrs.put("sn", ((Morale) user).getNum_registe_commerce());
 			attrs.put("cn", ((Morale) user).getMatricule_Fiscale());
 			attrs.put("givenName", ((Morale) user).getNom());
+		}
+		else {
+			attrs.put("ou", "employee");
+			attrs.put("sn", ((Employee) user).getNom());
+			attrs.put("cn", ((Employee) user).getPrenom() + ((Employee) user).getNom());
+			attrs.put("givenName", ((Employee) user).getPrenom());
 		}
 		return attrs;
 	}
@@ -225,7 +238,7 @@ public class LdapUtilisateurService implements LdapUtilisateurRepository {
 		entry.addAttribute("objectclass", "organizationalPerson");
 		entry.addAttribute("objectclass", "inetOrgPerson");
 		entry.addAttribute("uid", user.getUsername());
-		entry.addAttribute("userPassword", user.getPassword());
+		entry.addAttribute("userPassword", passwordEncoder.encode(user.getPassword()));
 		entry.addAttribute("mail", user.getEmail());
 		if (user instanceof Physique) {
 			entry.addAttribute("ou", "physique");
@@ -233,16 +246,22 @@ public class LdapUtilisateurService implements LdapUtilisateurRepository {
 			entry.addAttribute("cn", ((Physique) user).getPrenom() + ((Physique) user).getNom());
 			entry.addAttribute("givenName", ((Physique) user).getPrenom());
 		}
-		if (user instanceof Morale) {
+		else if (user instanceof Morale) {
 			entry.addAttribute("ou", "morale");
 			entry.addAttribute("sn", ((Morale) user).getNum_registe_commerce());
 			entry.addAttribute("cn", ((Morale) user).getMatricule_Fiscale());
 			entry.addAttribute("givenName", ((Morale) user).getNom());
 		}
+		else  {
+			entry.addAttribute("ou", "employee");
+			entry.addAttribute("sn", ((Employee) user).getNom());
+			entry.addAttribute("cn", ((Employee) user).getPrenom() + ((Employee) user).getNom());
+			entry.addAttribute("givenName", ((Employee) user).getPrenom());
+		}
 		return entry;
 	}
 
-	private Map<String, Entry> getAllEntry(Resource resource) throws IOException {
+	private Map<String, Entry> getAllEntry(Resource resource,Utilisateur user) throws IOException {
 		Map<String, Entry> list = new LinkedHashMap<String, Entry>();
 		LDIFEntrySource entrySource = new LDIFEntrySource(new LDIFReader(resource.getFile().getAbsolutePath()));
 		try {
@@ -250,6 +269,18 @@ public class LdapUtilisateurService implements LdapUtilisateurRepository {
 				try {
 					Entry entry = entrySource.nextEntry();
 					if (entry != null) {
+						if(entry.getAttribute("objectclass").hasValue("groupOfNames")) {
+							String userDN = buildDn(user).toString() + ",dc=esprit,dc=tn";
+							if(user instanceof Physique && entry.getAttribute("cn").hasValue("physique")) {
+								entry.addAttribute("member",userDN);
+							}
+							else if(user instanceof Morale && entry.getAttribute("cn").hasValue("morale")) {
+								entry.addAttribute("member",userDN);
+							}
+							else if (user instanceof Employee && entry.getAttribute("cn").hasValue("agent")) {
+								entry.addAttribute("member",userDN);
+							}
+						}
 						list.put(entry.getDN(), entry);
 					} else
 						break;
@@ -264,9 +295,8 @@ public class LdapUtilisateurService implements LdapUtilisateurRepository {
 			}
 		} finally {
 			entrySource.close();
-			return list;
 		}
-
+		return list;
 	}
 
 }
