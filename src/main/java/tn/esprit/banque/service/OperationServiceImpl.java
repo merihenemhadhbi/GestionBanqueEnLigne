@@ -16,7 +16,12 @@ import tn.esprit.banque.model.Versement;
 import tn.esprit.banque.repository.CarteRepository;
 import tn.esprit.banque.repository.CompteRepository;
 import tn.esprit.banque.repository.OperationRepository;
+<<<<<<< HEAD
 import tn.esprit.banque.service.compte.CompteCourant;
+=======
+import tn.esprit.banque.service.compte.CompteContrat;
+import tn.esprit.banque.CompteCourant;
+>>>>>>> master
 @Service
 public class OperationServiceImpl implements OperationService {
 	@Autowired
