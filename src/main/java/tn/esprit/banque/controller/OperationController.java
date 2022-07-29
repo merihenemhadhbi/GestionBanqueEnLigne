@@ -8,7 +8,5 @@ import tn.esprit.banque.service.compte.CompteContrat;
 @Controller
 public class OperationController {
 	CompteContrat oarteService;
-	OperationService operationService;
-	 
-		
+	OperationService operationService;	
 }
