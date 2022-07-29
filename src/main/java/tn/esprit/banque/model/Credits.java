@@ -36,76 +36,61 @@ public class Credits implements Serializable  {
 	    private Long idCredit;
 
 	    @DecimalMin(value = "0.0",message = "Veuillez specifier un Montant superieure ou egale à zero")
-	    private Double montantCredit;
+	    private BigDecimal montantCredit;
 
+	    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	    @Temporal(TemporalType.DATE)
 	    private Date dateCredit;
 
-	    private Double mensualite;
+	    @JsonProperty(access =JsonProperty.Access.READ_ONLY)
+	    private BigDecimal mensualite;
 
 	    @NotNull(message = "Veuillez preciser le type de credit")
 	    @Enumerated(EnumType.STRING)
 	    private TypeCredit typeCredit;
 
+	    @JsonProperty(access =JsonProperty.Access.READ_ONLY)
 	    private Long nombreMensualitesCredit;
 
-	    private Long montantReste;
+	    @JsonProperty(access =JsonProperty.Access.READ_ONLY)
+	    private BigDecimal montantReste;
 
-	    private Long montantReglee;
-	    private Boolean Approuver = false ; 
-	    private Double interet; 
+	    @JsonProperty(access =JsonProperty.Access.READ_ONLY)
+	    private BigDecimal montantReglee;
 
 	    @ManyToOne
 	    @JoinColumn(name = "numeroCompte")
 	    @JsonIgnore
 	    private Compte compteCredit;
 
-	
+	    /**
+	     * Constructeur Credit
+	     * @param idCredit
+	     * @param montantCredit
+	     * @param dateCredit
+	     * @param mensualite
+	     * @param typeCredit
+	     * @param nombreMensualitesCredit
+	     * @param montantReste
+	     * @param montantReglee
+	     */
 
+	    public Credits(Long idCredit, BigDecimal montantCredit, Date dateCredit, BigDecimal mensualite, TypeCredit typeCredit, Long nombreMensualitesCredit, BigDecimal montantReste, BigDecimal montantReglee) {
+	        this.idCredit = idCredit;
+	        this.montantCredit = montantCredit;
+	        this.dateCredit = dateCredit;
+	        this.mensualite = mensualite;
+	        this.typeCredit = typeCredit;
+	        this.nombreMensualitesCredit = nombreMensualitesCredit;
+	        this.montantReste = montantReste;
+	        this.montantReglee = montantReglee;
+	    }
 
-		public Credits(Long idCredit,
-				@DecimalMin(value = "0.0", message = "Veuillez specifier un Montant superieure ou egale à zero") Double montantCredit,
-				Date dateCredit, Double mensualite,
-				@NotNull(message = "Veuillez preciser le type de credit") TypeCredit typeCredit,
-				Long nombreMensualitesCredit, Long montantReste, Long montantReglee, Boolean approuver,
-				 Double interet, Compte compteCredit) {
-			super();
-			this.idCredit = idCredit;
-			this.montantCredit = montantCredit;
-			this.dateCredit = dateCredit;
-			this.mensualite = mensualite;
-			this.typeCredit = typeCredit;
-			this.nombreMensualitesCredit = nombreMensualitesCredit;
-			this.montantReste = montantReste;
-			this.montantReglee = montantReglee;
-			Approuver = approuver;
-			this.interet = interet;
-			this.compteCredit = compteCredit;
-		}
-
-		public Credits(){
+	    public Credits(){
 
 	    }
 
-	   
-
-		public Double getInteret() {
-			return interet;
-		}
-
-		public void setInteret(Double interet) {
-			this.interet = interet;
-		}
-
-		public Boolean getApprouver() {
-			return Approuver;
-		}
-
-		public void setApprouver(Boolean approuver) {
-			Approuver = approuver;
-		}
-
-		public Long getIdCredit() {
+	    public Long getIdCredit() {
 	        return idCredit;
 	    }
 
@@ -113,11 +98,11 @@ public class Credits implements Serializable  {
 	        this.idCredit = idCredit;
 	    }
 
-	    public Double getMontantCredit() {
+	    public BigDecimal getMontantCredit() {
 	        return montantCredit;
 	    }
 
-	    public void setMontantCredit(Double montantCredit) {
+	    public void setMontantCredit(BigDecimal montantCredit) {
 	        this.montantCredit = montantCredit;
 	    }
 
@@ -129,11 +114,11 @@ public class Credits implements Serializable  {
 	        this.dateCredit = dateCredit;
 	    }
 
-	    public Double getMensualite() {
+	    public BigDecimal getMensualite() {
 	        return mensualite;
 	    }
 
-	    public void setMensualite(Double mensualite) {
+	    public void setMensualite(BigDecimal mensualite) {
 	        this.mensualite = mensualite;
 	    }
 
@@ -153,19 +138,19 @@ public class Credits implements Serializable  {
 	        this.nombreMensualitesCredit = nombreMensualitesCredit;
 	    }
 
-	    public Long getMontantReste() {
+	    public BigDecimal getMontantReste() {
 	        return montantReste;
 	    }
 
-	    public void setMontantReste(Long montantReste) {
+	    public void setMontantReste(BigDecimal montantReste) {
 	        this.montantReste = montantReste;
 	    }
 
-	    public Long getMontantReglee() {
+	    public BigDecimal getMontantReglee() {
 	        return montantReglee;
 	    }
 
-	    public void setMontantReglee(Long montantReglee) {
+	    public void setMontantReglee(BigDecimal montantReglee) {
 	        this.montantReglee = montantReglee;
 	    }
 
