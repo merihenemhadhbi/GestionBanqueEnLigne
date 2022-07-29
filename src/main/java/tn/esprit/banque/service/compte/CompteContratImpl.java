@@ -19,6 +19,13 @@ import tn.esprit.banque.repository.CompteRepository;
 @Service
 public class CompteContratImpl implements CompteContrat {
 	private CompteRepository compteRepo;
+	private HashPasswordContrat hashPasswordContrat;
+	
+	 @Autowired
+	    public void setHashPasswordContrat(HashPasswordContrat hashPasswordContrat) {
+	        this.hashPasswordContrat = hashPasswordContrat;
+	    }
+
 	    @Autowired
 	    public void setCompteRepo(CompteRepository compteRepo) {
 	        this.compteRepo = compteRepo;
@@ -37,7 +44,9 @@ public class CompteContratImpl implements CompteContrat {
 		return compte;
 	}
 
-	
+	public Page<Compte> findCompteParMotCle(String mc, int page, int size) {
+		return compteRepo.findCompteParMotCle(mc, PageRequest.of(page, size));
+	}
 
 	@Override
 	public Compte updateAccount(Compte compte, Long aId) {
@@ -55,7 +64,7 @@ public class CompteContratImpl implements CompteContrat {
 	@Override
 	public Compte disactivateAccount(Long idCompte, String motDePasse)
 			throws InvalidAccountException, InvalidPasswordException, InvalidConfirmationException,
-			InvalidAdminDeletionException {
+			InvalidAdminDeletionException, InvalidHashPasswordException {
 
 		Compte compte = findLeCompte(idCompte);
 
@@ -64,10 +73,15 @@ public class CompteContratImpl implements CompteContrat {
 		System.out.println("****received****");
 		System.out.println("le mot de passe recu est :" + motDePasse);
 		System.out.println("le mot de passe recu crypté:***");
+		System.out.println(hashPasswordContrat.hashPassword(motDePasse));
+
+		if (!compte.getMotDePasse().equals(hashPasswordContrat.hashPassword(motDePasse))) {
+			throw new InvalidPasswordException("Mot de passe incorrect Veuillez saisir votre mot de passe");
+		} else {
 			compte.setEtatCompte(false);
+		}
+
 		return updateAccount(compte, compte.getNumeroCompte());
 	}
-
-
 
 }
