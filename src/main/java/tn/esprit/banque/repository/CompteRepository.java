@@ -17,7 +17,6 @@ import tn.esprit.banque.model.Compte.CategorieCompte;
 public interface CompteRepository extends JpaRepository<Compte, Long> {
 
 	@Query("select c from Compte c where  c.etatCompte = true ")
-    Page<Compte> findCompteParMotCle(@Param("x") String mc1,Pageable pageable);
 	List<Compte> findByCategorieCompte(CategorieCompte categorieCompte);
 
 }
