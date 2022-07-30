@@ -16,7 +16,7 @@ import tn.esprit.banque.model.Compte.CategorieCompte;
 @Repository
 public interface CompteRepository extends JpaRepository<Compte, Long> {
 
-	@Query("select c from Compte c where  c.etatCompte = true ")
+	//@Query("select c from Compte c where  c.etatCompte = true ")
 	List<Compte> findByCategorieCompte(CategorieCompte categorieCompte);
 
 }
