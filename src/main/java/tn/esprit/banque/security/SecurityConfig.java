@@ -44,6 +44,8 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf().disable()
             .authorizeHttpRequests((authz) -> authz
+            		.antMatchers("/utilisateur/addMorale").permitAll()
+            		.antMatchers("/utilisateur/addPhysique").permitAll()
                 .anyRequest().authenticated()
             )
             .httpBasic();

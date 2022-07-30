@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,7 +43,8 @@ private CarteRepository CarteRepo;
 @Autowired
 private CompteRepository CompteRepo;
  @PostMapping(value = "/newWithdrawal/{idCarte}", produces = "application/json", consumes = "application/json")
-	public ResponseEntity<Object> addCard(@RequestBody RetraitATM RetraitATM, @PathVariable("idCarte") Long idCarte) {
+	@Secured({"ROLE_PHYSIQUE","ROLE_MORALE"})	
+ 	public ResponseEntity<Object> addCard(@RequestBody RetraitATM RetraitATM, @PathVariable("idCarte") Long idCarte) {
 	 try {  Long newPlafond = null;
 			Carte Carte = CarteRepo.findById(idCarte).get();
 			RetraitATM.setCarte(Carte);
@@ -86,7 +88,8 @@ private CompteRepository CompteRepo;
 		}
 	}
  @PutMapping(value = "/updateRetraitATM")
-	public ResponseEntity updateRetraitATM(@RequestBody RetraitATM RetraitATM) {
+	@Secured({"ROLE_PHYSIQUE","ROLE_MORALE"})
+ 	public ResponseEntity updateRetraitATM(@RequestBody RetraitATM RetraitATM) {
 		RetraitATM retraitATM = null;
 		Carte Carte = null;
 		try {
@@ -101,6 +104,7 @@ private CompteRepository CompteRepo;
 	}
 
 	@DeleteMapping(value = "/deleteRetraitATM/{id}")
+	@Secured({"ROLE_PHYSIQUE","ROLE_MORALE"})	
 	public ResponseEntity deleteRetraitATM(@PathVariable Long id) {
 		try {
 			RetraitATMService.deleteRetraitATM(id);
@@ -112,6 +116,7 @@ private CompteRepository CompteRepo;
 	}
 
 	@GetMapping(value = "/findAllRetraitATMs")
+	@Secured({"ROLE_PHYSIQUE","ROLE_MORALE"})	
 	public ResponseEntity findAllExistsRetraitATM() {
 		List<RetraitATM> RetraitList = new ArrayList<>();
 		try {
@@ -124,6 +129,7 @@ private CompteRepository CompteRepo;
 	}
 
 	@GetMapping(value = "/findAllRetraitATMsByCard/{idCarte}")
+	@Secured({"ROLE_PHYSIQUE","ROLE_MORALE"})	
 	public ResponseEntity findAllCards(@PathVariable Long idCarte) {
 		List<RetraitATM> CardList = new ArrayList<>();
 		Carte Carte = null;
@@ -138,6 +144,7 @@ private CompteRepository CompteRepo;
 	}
 
 	@GetMapping(value = "/findRetraitATM/{id}")
+	@Secured({"ROLE_PHYSIQUE","ROLE_MORALE"})	
 	public ResponseEntity findCard(@PathVariable Long id) {
 		RetraitATM RetraitATM = null;
 		try {

@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,7 +30,8 @@ private CompteContrat compteContrat;
 @Autowired
 private CompteRepository CompteRepo;
  @PostMapping(value = "/addCard/{idCompte}", produces = "application/json", consumes = "application/json")
-	public ResponseEntity<Object> addCard(@RequestBody Carte Carte, @PathVariable("idCompte") Long idCompte) {
+	@Secured({"ROLE_PHYSIQUE","ROLE_MORALE"})	
+ 	public ResponseEntity<Object> addCard(@RequestBody Carte Carte, @PathVariable("idCompte") Long idCompte) {
 		try {
 			Compte Compte = CompteRepo.findById(idCompte).get();
 			Carte.setCompte(Compte);
@@ -47,6 +49,7 @@ private CompteRepository CompteRepo;
 		}
 	}
  @PutMapping(value = "/updateCarte")
+	@Secured({"ROLE_PHYSIQUE","ROLE_MORALE"})
 	public ResponseEntity updateCarte(@RequestBody Carte Carte) {
 		Carte carte = null;
 		Compte Compte = null;
@@ -62,6 +65,7 @@ private CompteRepository CompteRepo;
 	}
 
 	@DeleteMapping(value = "/deleteCarte/{id}")
+	@Secured({"ROLE_PHYSIQUE","ROLE_MORALE"})	
 	public ResponseEntity deleteCarte(@PathVariable Long id) {
 		try {
 			CarteService.deleteCarte(id);
@@ -73,6 +77,7 @@ private CompteRepository CompteRepo;
 	}
 
 	@GetMapping(value = "/findAllCards")
+	@Secured({"ROLE_PHYSIQUE","ROLE_MORALE"})	
 	public ResponseEntity findAllExistsCards() {
 		List<Carte> CardList = new ArrayList<>();
 		try {
@@ -85,6 +90,7 @@ private CompteRepository CompteRepo;
 	}
 
 	@GetMapping(value = "/findAllCardsByAccount/{idCompte}")
+	@Secured({"ROLE_PHYSIQUE","ROLE_MORALE"})	
 	public ResponseEntity findAllCards(@PathVariable Long idCompte) {
 		List<Carte> CardList = new ArrayList<>();
 		Compte Compte = null;
@@ -99,6 +105,7 @@ private CompteRepository CompteRepo;
 	}
 
 	@GetMapping(value = "/findCarte/{id}")
+	@Secured({"ROLE_PHYSIQUE","ROLE_MORALE"})	
 	public ResponseEntity findCard(@PathVariable Long id) {
 		Carte Carte = null;
 		try {
