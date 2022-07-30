@@ -24,6 +24,7 @@ import org.springframework.ldap.core.support.BaseLdapPathContextSource;
 import org.springframework.security.authentication.AuthenticationEventPublisher;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.DefaultAuthenticationEventPublisher;
+import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.config.ldap.LdapPasswordComparisonAuthenticationManagerFactory;
@@ -78,6 +79,13 @@ public class SecurityConfig {
 		authorities.setGroupSearchFilter("member={0}");
 		return authorities;
 	}
+
+	
+	@Bean
+	public AuthenticationEventPublisher authenticationEventPublisher
+	        (ApplicationEventPublisher applicationEventPublisher) {
+	    return new DefaultAuthenticationEventPublisher(applicationEventPublisher);
+	}
 	
 	@Bean
 	PasswordEncoder passwordEncoder() {
@@ -85,20 +93,17 @@ public class SecurityConfig {
 	}
 	
 	@Bean
-	AuthenticationManager authenticationManager(BaseLdapPathContextSource contextSource,LdapAuthoritiesPopulator authorities,PasswordEncoder passwordEncoder) {
+	AuthenticationManager authenticationManager(BaseLdapPathContextSource contextSource,LdapAuthoritiesPopulator authorities,PasswordEncoder passwordEncoder,AuthenticationEventPublisher authenticationEventPublisher) {
 		LdapPasswordComparisonAuthenticationManagerFactory factory = new LdapPasswordComparisonAuthenticationManagerFactory(
 				contextSource, passwordEncoder);
 		factory.setUserDnPatterns( "uid={0},ou=morale","uid={0},ou=physique","uid={0},ou=employee");
 		factory.setLdapAuthoritiesPopulator(authorities);
 		factory.setUserDetailsContextMapper(new UserContextMapper());
-		return factory.createAuthenticationManager();
+		ProviderManager providerManager =(ProviderManager) factory.createAuthenticationManager();
+		providerManager.setAuthenticationEventPublisher(authenticationEventPublisher);
+		return providerManager;
 	}
-	
-	@Bean
-	public AuthenticationEventPublisher authenticationEventPublisher
-	        (ApplicationEventPublisher applicationEventPublisher) {
-	    return new DefaultAuthenticationEventPublisher(applicationEventPublisher);
-	}
+
 	
 
 
