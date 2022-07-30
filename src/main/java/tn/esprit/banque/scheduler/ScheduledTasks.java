@@ -6,17 +6,19 @@ import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 
 import tn.esprit.banque.model.Compte;
 import tn.esprit.banque.repository.CompteRepository;
 
+@Component
 public class ScheduledTasks {
 
 	@Autowired
 	CompteRepository cmptRepo;
 	Logger logger = Logger.getLogger(ScheduledTasks.class.getName());
 
-	@Scheduled(cron = "0 0 12 1 1/3 ? *")
+	@Scheduled(cron = "0 0 12 1 1/3 *")
 	public void scheduleTaskUsingCronExpression() {
 		List<Compte> comptes = cmptRepo.findAll();
 		comptes.forEach(compte -> {
@@ -25,4 +27,5 @@ public class ScheduledTasks {
 		cmptRepo.saveAll(comptes);
 		logger.fine("Fees job passed!");
 	}
+	
 }

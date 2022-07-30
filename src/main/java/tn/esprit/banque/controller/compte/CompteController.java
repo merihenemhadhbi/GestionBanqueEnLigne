@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import tn.esprit.banque.exceptions.InvalidAccountException;
@@ -40,6 +41,7 @@ import tn.esprit.banque.model.Compte.CategorieCompte;
 import tn.esprit.banque.model.Operation;
 import tn.esprit.banque.repository.CompteRepository;
 import tn.esprit.banque.repository.OperationRepository;
+import tn.esprit.banque.scheduler.ScheduledTasks;
 import tn.esprit.banque.service.UtilisateurServiceImpl;
 import tn.esprit.banque.service.compte.CanvasjsChartService;
 import tn.esprit.banque.service.compte.CanvasjsChartServiceImpl.DatabaseConnectionException;
@@ -185,7 +187,13 @@ public class CompteController {
 
 	@GetMapping(value = "/accounts/{category}", produces = { "application/json" })
 	public ResponseEntity<Object> getAccountsByCategory(@PathVariable("category") String category) {
-		return new ResponseEntity<>(CompteRepo.findByCategorieCompte(CategorieCompte.valueOf(category)), HttpStatus.OK);
+		List<Compte> comptes = CompteRepo.findByCategorieCompte(CategorieCompte.valueOf(category));
+		for (Compte c :comptes) {
+			if(!c.isEtatCompte()) {
+				comptes.remove(c);
+			}
+		}
+		return new ResponseEntity<Object>(comptes, HttpStatus.OK);
 
 	}
 
@@ -221,6 +229,16 @@ public class CompteController {
 		public ModelAndView getSuperheroesUnavailable(DatabaseConnectionException ex) {
 			return new ModelAndView("chart", "error", ex.getMessage());
 		}
+		
+		@Autowired
+		private ScheduledTasks scheduledTasks;
+		
+		@GetMapping(value = "/FeesJob", produces = { "application/json" })
+		@ResponseBody
+			public void FeesJob() {
+			scheduledTasks.scheduleTaskUsingCronExpression();
+		}
+
 	
 
 }
