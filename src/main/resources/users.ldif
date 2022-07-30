@@ -175,5 +175,5 @@ member: uid=mhwideg,ou=morale,dc=esprit,dc=tn
 dn: cn=agent,ou=groups,dc=esprit,dc=tn
 objectclass: top
 objectclass: groupOfNames
-cn: morale
+cn: agent
 member: uid=achikhaoui,ou=employee,dc=esprit,dc=tn

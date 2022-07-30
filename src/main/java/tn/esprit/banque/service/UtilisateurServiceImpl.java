@@ -3,17 +3,22 @@ package tn.esprit.banque.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AuthorizationServiceException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import tn.esprit.banque.model.Utilisateur;
 import tn.esprit.banque.repository.UtilisateurRepository;
+import tn.esprit.banque.security.RoleConstants;
+
 @Service
 public class UtilisateurServiceImpl implements UtilisateurService {
-
 	@Autowired
 	UtilisateurRepository utilisateurRepository;
 	@Autowired
 	LdapUtilisateurService ldapUtilisateurService;
+
 	@Override
 	public Utilisateur addUtilisateur(Utilisateur utilisateur) {
 		ldapUtilisateurService.create(utilisateur);
@@ -22,13 +27,21 @@ public class UtilisateurServiceImpl implements UtilisateurService {
 
 	@Override
 	public Utilisateur updateUtilisateur(Utilisateur utilisateur) {
-		ldapUtilisateurService.update(utilisateur);
-		return utilisateurRepository.save(utilisateur);
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if (auth != null && ((auth.getAuthorities().contains(RoleConstants.ROLE_ADMIN)
+				|| auth.getAuthorities().contains(RoleConstants.ROLE_AGENT)))
+				|| utilisateur.getUsername().equals(auth.getName())) {
+			ldapUtilisateurService.update(utilisateur);
+			return utilisateurRepository.save(utilisateur);
+		}
+		throw new AuthorizationServiceException("can't update others account");
 	}
 
 	@Override
 	public void deleteUtilisateur(String username) {
-		Utilisateur user = utilisateurRepository.findById(username).isPresent()?utilisateurRepository.findById(username).get():null;
+		Utilisateur user = utilisateurRepository.findById(username).isPresent()
+				? utilisateurRepository.findById(username).get()
+				: null;
 		ldapUtilisateurService.delete(user);
 		utilisateurRepository.deleteById(username);
 	}
@@ -40,7 +53,13 @@ public class UtilisateurServiceImpl implements UtilisateurService {
 
 	@Override
 	public Utilisateur findUtilisateurById(String username) {
-		return utilisateurRepository.findById(username).get();
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if (auth != null && ((auth.getAuthorities().contains(RoleConstants.ROLE_ADMIN)
+				|| auth.getAuthorities().contains(RoleConstants.ROLE_AGENT)))
+				|| username.equals(auth.getName())) {
+			return utilisateurRepository.findById(username).get();
+		}
+		throw new AuthorizationServiceException("can't see others account");
 	}
 
 }
