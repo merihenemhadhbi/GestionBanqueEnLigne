@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import tn.esprit.banque.model.Employee;
 import tn.esprit.banque.model.Morale;
 import tn.esprit.banque.model.Physique;
+import tn.esprit.banque.model.Utilisateur;
 import tn.esprit.banque.service.UtilisateurService;
 
 @Controller
@@ -102,10 +103,69 @@ public class UtilisateurController {
 
 	}
 	
-	@GetMapping(value = "/getuser/{username}", produces = "application/json", consumes = "application/json")
+	@GetMapping(value = "/getuser/{username}", produces = "application/json")
 	public ResponseEntity updateMorale(@PathVariable("username") String username) {
 		try {
 			return ResponseEntity.status(HttpStatus.ACCEPTED).body(userService.findUtilisateurById(username));
+		} catch (Exception ex) {
+			return ResponseEntity.badRequest().body(ex.getMessage());
+		}
+	}
+	
+	@GetMapping(value = "/getallusers", produces = "application/json")
+	@Secured({"ROLE_ADMIN","ROLE_AGENT"})
+	public ResponseEntity getAllUsers() {
+		try {
+			return ResponseEntity.status(HttpStatus.ACCEPTED).body(userService.findAllUtilisateur());
+		} catch (Exception ex) {
+			return ResponseEntity.badRequest().body(ex.getMessage());
+		}
+	}
+	
+	@GetMapping(value = "/getallenabledusers", produces = "application/json")
+	@Secured({"ROLE_ADMIN","ROLE_AGENT"})
+	public ResponseEntity getAllEnabledUsers() {
+		try {
+			return ResponseEntity.status(HttpStatus.ACCEPTED).body(userService.findAllEnabledUtilisateur());
+		} catch (Exception ex) {
+			return ResponseEntity.badRequest().body(ex.getMessage());
+		}
+	}
+	
+	@GetMapping(value = "/getalldisabledusers", produces = "application/json")
+	@Secured({"ROLE_ADMIN","ROLE_AGENT"})
+	public ResponseEntity getAllDisabledUsers() {
+		try {
+			return ResponseEntity.status(HttpStatus.ACCEPTED).body(userService.findAllDisabledUtilisateur());
+		} catch (Exception ex) {
+			return ResponseEntity.badRequest().body(ex.getMessage());
+		}
+	}
+	
+	@PostMapping(value = "/validate/{username}", produces = "application/json")
+	@Secured({"ROLE_ADMIN","ROLE_AGENT"})
+	public ResponseEntity validate(@PathVariable("username") String username) {
+		try {
+			Utilisateur user = userService.findUtilisateurById(username);
+			if(user.isEnabled()) {
+				throw new RuntimeException("user already enabled");
+			}
+			user.setEnabled(true);
+			return ResponseEntity.status(HttpStatus.ACCEPTED).body(userService.triggerValidate(user));
+		} catch (Exception ex) {
+			return ResponseEntity.badRequest().body(ex.getMessage());
+		}
+	}
+	
+	@PostMapping(value = "/disable/{username}", produces = "application/json")
+	public ResponseEntity disable(@PathVariable("username") String username) {
+		try {
+			Utilisateur user = userService.findUtilisateurById(username);
+			if(!user.isEnabled()) {
+				throw new RuntimeException("user already disabled");
+			}
+			user.setEnabled(false);
+			return ResponseEntity.status(HttpStatus.ACCEPTED).body(userService.triggerValidate(user));
 		} catch (Exception ex) {
 			return ResponseEntity.badRequest().body(ex.getMessage());
 		}

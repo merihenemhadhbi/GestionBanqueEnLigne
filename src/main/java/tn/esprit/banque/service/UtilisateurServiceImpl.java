@@ -21,6 +21,11 @@ public class UtilisateurServiceImpl implements UtilisateurService {
 
 	@Override
 	public Utilisateur addUtilisateur(Utilisateur utilisateur) {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if (auth != null && (auth.getAuthorities().contains(RoleConstants.ROLE_ADMIN)
+				|| auth.getAuthorities().contains(RoleConstants.ROLE_AGENT))) {
+			utilisateur.setEnabled(true);
+		}
 		ldapUtilisateurService.create(utilisateur);
 		return utilisateurRepository.save(utilisateur);
 	}
@@ -50,6 +55,15 @@ public class UtilisateurServiceImpl implements UtilisateurService {
 	public List<Utilisateur> findAllUtilisateur() {
 		return (List<Utilisateur>) utilisateurRepository.findAll();
 	}
+	@Override
+	public List<Utilisateur> findAllEnabledUtilisateur() {
+		return (List<Utilisateur>) utilisateurRepository.findAllenabled();
+	}
+	
+	@Override
+	public List<Utilisateur> findAllDisabledUtilisateur() {
+		return (List<Utilisateur>) utilisateurRepository.findAlldisabled();
+	}
 
 	@Override
 	public Utilisateur findUtilisateurById(String username) {
@@ -59,7 +73,19 @@ public class UtilisateurServiceImpl implements UtilisateurService {
 				|| username.equals(auth.getName())) {
 			return utilisateurRepository.findById(username).get();
 		}
-		throw new AuthorizationServiceException("can't see others account");
+		throw new AuthorizationServiceException("can't see others users");
+	}
+	
+	@Override
+	public Utilisateur triggerValidate(Utilisateur user){
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if (auth != null && ((auth.getAuthorities().contains(RoleConstants.ROLE_ADMIN)
+				|| auth.getAuthorities().contains(RoleConstants.ROLE_AGENT)))
+				|| user.getUsername().equals(auth.getName())) {
+			return utilisateurRepository.save(user);
+		}
+		throw new AuthorizationServiceException("can't disable others users");
+
 	}
 
 }

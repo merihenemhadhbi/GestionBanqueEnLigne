@@ -2,11 +2,13 @@ package tn.esprit.banque.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.event.AuthenticationSuccessEvent;
 import org.springframework.stereotype.Component;
 
 import tn.esprit.banque.model.Utilisateur;
 import tn.esprit.banque.repository.UtilisateurRepository;
+import tn.esprit.banque.service.UtilisateurService;
 
 @Component
 public class AuthenticationEvents {
@@ -16,14 +18,15 @@ public class AuthenticationEvents {
 	@EventListener
     public void onSuccess(AuthenticationSuccessEvent success) {
 		Utilisateur user = (Utilisateur)success.getAuthentication().getPrincipal();
-		Utilisateur dbuser = userRepo.getUserCash().get(user.getUsername());
+		Utilisateur dbuser = userRepo.findById(user.getUsername()).get();
+		if(!dbuser.isEnabled()) {
+			throw new DisabledException("user disabled");
+		}
 		if(dbuser==null) {
-			userRepo.getUserCash().put(user.getUsername(),user);
 			userRepo.save(user);
 			}
 		else if(!dbuser.equals(user)) {
 			user = updateUser(user,dbuser);
-			userRepo.getUserCash().put(user.getUsername(),user);
 			userRepo.save(user);
 			}
     }

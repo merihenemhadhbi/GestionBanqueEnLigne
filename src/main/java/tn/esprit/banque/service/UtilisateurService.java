@@ -11,4 +11,8 @@ public interface UtilisateurService {
 	void deleteUtilisateur(String email);
 	List<Utilisateur> findAllUtilisateur();
 	Utilisateur findUtilisateurById(String email);
+	List<Utilisateur> findAllEnabledUtilisateur();
+	List<Utilisateur> findAllDisabledUtilisateur();
+	Utilisateur triggerValidate(Utilisateur utilisateur);
+
 }

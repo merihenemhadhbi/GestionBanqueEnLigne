@@ -52,7 +52,7 @@ public abstract class Utilisateur implements UserDetails {
 	@Transient
 	private boolean credentialsNonExpired = true;
 
-	@Transient
+	@Column(name = "enabled")
 	private boolean enabled = false;
 
 	@OneToMany(mappedBy = "numeroCompte")
