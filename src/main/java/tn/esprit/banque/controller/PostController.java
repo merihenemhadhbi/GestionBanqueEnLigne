@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,13 +17,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import tn.esprit.banque.model.Post;
+import tn.esprit.banque.model.Utilisateur;
 import tn.esprit.banque.repository.PostRepository;
 import tn.esprit.banque.service.PostService;
 
 
-@Controller
+@RestController
 public class PostController {
 @Autowired
  private PostService postService; 
@@ -30,6 +33,7 @@ public class PostController {
 public ResponseEntity createPost(@RequestBody Post post) {
 	Post postSave = null;
 	try {
+		post.setUtilisateur((Utilisateur)SecurityContextHolder.getContext().getAuthentication().getPrincipal());
 		postSave = postService.addPost(post);
 	} catch (Exception ex) {
 		ex.printStackTrace();

@@ -13,13 +13,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import tn.esprit.banque.model.Commentaire;
 import tn.esprit.banque.model.Post;
 import tn.esprit.banque.service.CommentaireService;
 import tn.esprit.banque.service.PostService;
 
-@Controller
+@RestController
 public class CommentaireController {
 	@Autowired
 	private CommentaireService commentaireService;

@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -49,6 +50,7 @@ public class CreditController {
 	}
 
 	@PostMapping("/add-credit")
+	@Secured({"ROLE_ADMIN"})
 	public ResponseEntity createCredit(@RequestBody Credits c, @RequestParam Long idCompte) {
 		Credits postcredit = null;
 		CreditAbstractionService creditAbstractionService = null;
@@ -87,21 +89,23 @@ public class CreditController {
 	}
 
 
-	@PutMapping("/affectercredit/{id-credit}")
-	public ResponseEntity Affectercredit(@PathVariable("id-credit") Long idCredit) {
+	@PutMapping("/affectercredit")
+	@Secured({"ROLE_ADMIN","ROLE_AGENT"})
+	public ResponseEntity Affectercredit(@RequestParam Long idCredit, @RequestParam Long idCompte) {
 		Credits postcredit = null;
 		 Credits credit = fabriqueCreditService.findUnCredit(idCredit);
+		 Compte compte = compteRepository.findById(idCompte).get();
 		CreditAbstractionService creditAbstractionService = null;
 		try {
 			creditAbstractionService = fabriqueCreditService.generateCredit(credit.getTypeCredit());
 			switch (credit.getTypeCredit()) {
 			case IMMOBILIER:
 				CreditImmobilierService creditImmobilierService = (CreditImmobilierService) creditAbstractionService;
-				postcredit = creditImmobilierService.affectercredit(idCredit);
+				postcredit = creditImmobilierService.affectercredit(credit,compte);
 				break;
 			case CONSOMMATION:
 				CreditConsommationService creditConsommationService = (CreditConsommationService) creditAbstractionService;
-				postcredit = creditConsommationService.affectercredit(idCredit);
+				postcredit = creditConsommationService.affectercredit(credit,compte);
 				break;
 			default:
 				throw new InvalidSwitchCaseException("Veuillez choisir un type de credit valide");
@@ -115,6 +119,7 @@ public class CreditController {
 }
 
 	@PostMapping("/calculcreditdeux/{compte-id}")
+	@Secured({"ROLE_ADMIN","ROLE_AGENT"})
 	public ResponseEntity calculCreditdeux(@RequestBody Credits credit, @PathVariable("compte-id") Long idCompte) {
 
 		Credits postcredit = null;

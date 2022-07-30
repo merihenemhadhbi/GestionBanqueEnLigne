@@ -32,7 +32,7 @@ ou: physique
 postalAddress: physique$soussa
 telephoneNumber: +1 510 805-4238
 title: Junior physique agent
-userPassword: Password1
+userPassword: $2a$10$SePdyicb79ApXGVqTZWRWeGDXBeX74s6u5kAJi5OPiDmnTzYfZ.Fa
 uid: mmhadhbi
 givenName: merihene
 mail: merihene.mhadhbi@esprit.tn
@@ -60,7 +60,7 @@ ou: morale
 postalAddress: physique$tunis
 telephoneNumber: +1 213 858-7435
 title: 845638984
-userPassword: Password1
+userPassword: $2a$10$SePdyicb79ApXGVqTZWRWeGDXBeX74s6u5kAJi5OPiDmnTzYfZ.Fa
 givenName: monji
 mail: monji.hwideg@esprit.tn
 carLicense: PTKU1K
@@ -86,7 +86,7 @@ ou: physique
 postalAddress: physique$korba
 telephoneNumber: +1 804 546-2861
 title: Chief physique agent
-userPassword: Password1
+userPassword: $2a$10$SePdyicb79ApXGVqTZWRWeGDXBeX74s6u5kAJi5OPiDmnTzYfZ.Fa
 uid: ssfaihi
 givenName: sawsan
 mail: sawsan.sfaihi@esprit.tn
@@ -113,7 +113,7 @@ ou: agent
 postalAddress: physique$korba
 telephoneNumber: +1 510 589-6560
 title: Junior physique agent
-userPassword: Password1
+userPassword: $2a$10$SePdyicb79ApXGVqTZWRWeGDXBeX74s6u5kAJi5OPiDmnTzYfZ.Fa
 uid: achikhaoui
 givenName: achref
 mail: achref.chikhaoui@esprit.tn
@@ -140,7 +140,7 @@ ou: admin
 postalAddress: physique$tunis
 telephoneNumber: +1 408 821-9497
 title: Master physique agent
-userPassword: Password1
+userPassword: $2a$10$SePdyicb79ApXGVqTZWRWeGDXBeX74s6u5kAJi5OPiDmnTzYfZ.Fa
 uid: yzouari
 givenName: yassin
 mail: yzouari@esprit.tn
@@ -175,5 +175,5 @@ member: uid=mhwideg,ou=morale,dc=esprit,dc=tn
 dn: cn=agent,ou=groups,dc=esprit,dc=tn
 objectclass: top
 objectclass: groupOfNames
-cn: morale
+cn: agent
 member: uid=achikhaoui,ou=employee,dc=esprit,dc=tn
